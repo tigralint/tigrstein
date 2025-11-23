@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CLASSIFIED // NOFORN</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="terminal-layer">
+        <div class="glitch-text" data-text="ACCESS RESTRICTED">ACCESS RESTRICTED</div>
+        <p>WARNING: You are attempting to access the "DEEP STATE" master directory.</p>
+        <p>Trace program initiated...</p>
+        
+        <div class="input-group">
+            <label>> ENTER CLEARANCE CODE:</label>
+            <input type="password" id="passcode" placeholder="___" maxlength="3">
+        </div>
+        <div id="hint" style="display:none; color: #333;">(Hint: The song asks... Are you ___ enough?)</div>
+    </div>
+
+    <script>
+        const input = document.getElementById('passcode');
+        input.addEventListener('keyup', (e) => {
+            // Пароль: MAN (из песни "Are you MAN enough")
+            if (input.value.toUpperCase() === 'MAN') {
+                document.body.innerHTML = '<h1 class="access-granted">ACCESS GRANTED</h1>';
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+            }
+        });
+    </script>
+</body>
+</html>

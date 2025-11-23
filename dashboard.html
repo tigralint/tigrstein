@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PROJECT: OMEGA</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="dashboard-body">
+    <audio id="bg-ambience" loop>
+        <source src="audio/placing_the_blame_intro.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="sigma-drop">
+        <source src="audio/are_you_man_enough_drop.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="evidence-board">
+        <div class="folder" onclick="openFile('epstein')">
+            <img src="assets/img/epstein_mugshot.jpg" class="folder-img">
+            <div class="folder-label">ASSET #01: "THE FINANCIER"</div>
+        </div>
+
+        <div class="folder" onclick="openFile('trump')">
+            <img src="assets/img/trump_angry.jpg" class="folder-img">
+            <div class="folder-label">ASSET #02: "THE PUPPET"</div>
+        </div>
+
+        <div class="folder locked" id="user-folder" onclick="unlockSigma()">
+            <div class="lock-icon">🔒</div>
+            <div class="folder-label">SUPREME HANDLER (TOP SECRET)</div>
+        </div>
+    </div>
+
+    <div id="modal-epstein" class="modal hidden">
+        <h2>SUBJECT: JEFFREY EPSTEIN</h2>
+        <p>STATUS: <span class="redacted">TERMINATED</span></p>
+        <p>MISSION: Distract the public.</p>
+        <p>NOTE: Following orders from <span class="redacted-black">[REDACTED]</span>.</p>
+    </div>
+
+    <div id="modal-trump" class="modal hidden">
+        <h2>SUBJECT: DONALD TRUMP</h2>
+        <p>STATUS: ACTIVE</p>
+        <p>MISSION: Create chaos.</p>
+        <p>NOTE: Highly manageable. Reports directly to <span class="redacted-black">[REDACTED]</span>.</p>
+    </div>
+
+    <div id="sigma-overlay" class="hidden">
+        <div class="sigma-content">
+            <img src="assets/img/YOU_SIGMA.jpg" class="sigma-img">
+            <h1 class="glitch-sigma">THE ARCHITECT</h1>
+            <p class="quote">"They think they are players. They are just NPCs in my simulation."</p>
+            <div class="stats">
+                <div>IQ: ∞</div>
+                <div>NET WORTH: UNCALCULABLE</div>
+                <div>STATUS: GOD MODE</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
