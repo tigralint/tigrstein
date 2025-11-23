@@ -2,31 +2,169 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CLASSIFIED // NOFORN</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>US GOV // AUTHORIZED ACCESS ONLY</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        
+        body {
+            background-color: #0a0e17; /* Темно-синий, почти черный */
+            color: #aab2c0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .login-container {
+            width: 450px;
+            background: #111625;
+            border: 1px solid #2a3b55;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            text-align: center;
+            position: relative;
+        }
+        
+        /* "Официальная" шапка */
+        .seal {
+            width: 100px;
+            height: 100px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg') no-repeat center/contain;
+            margin: 0 auto 20px;
+            filter: grayscale(100%) opacity(0.7); /* Делаем логотип мрачным */
+        }
+        
+        h1 {
+            font-size: 18px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        h2 {
+            font-size: 12px;
+            color: #5e6d82;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #2a3b55;
+            padding-bottom: 20px;
+        }
+
+        .warning-box {
+            background: rgba(178, 34, 34, 0.1);
+            border-left: 3px solid #B22222;
+            color: #B22222;
+            font-size: 11px;
+            text-align: left;
+            padding: 10px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #5e6d82;
+            margin-bottom: 5px;
+        }
+        
+        input {
+            width: 100%;
+            background: #0d121f;
+            border: 1px solid #2a3b55;
+            color: #fff;
+            padding: 10px;
+            font-family: 'Courier Prime', monospace;
+            box-sizing: border-box; /* Фикс ширины */
+        }
+        input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        button {
+            width: 100%;
+            background: #2a3b55;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #4a90e2;
+        }
+
+        .footer-text {
+            margin-top: 20px;
+            font-size: 9px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <div class="terminal-layer">
-        <div class="glitch-text" data-text="ACCESS RESTRICTED">ACCESS RESTRICTED</div>
-        <p>WARNING: You are attempting to access the "DEEP STATE" master directory.</p>
-        <p>Trace program initiated...</p>
-        
-        <div class="input-group">
-            <label>> ENTER CLEARANCE CODE:</label>
-            <input type="password" id="passcode" placeholder="___" maxlength="3">
+
+    <div class="login-container">
+        <div class="seal"></div>
+        <h1>Central Intelligence Agency</h1>
+        <h2>SECURE DATA ACCESS PORTAL [V. 4.0.1]</h2>
+
+        <div class="warning-box">
+            <strong>WARNING:</strong> You are accessing a U.S. Government information system. Unauthorized access is prohibited by Public Law 99-474. All activities are monitored and recorded.
         </div>
-        <div id="hint" style="display:none; color: #333;">(Hint: The song asks... Are you ___ enough?)</div>
+
+        <div class="input-group">
+            <label>AGENT ID</label>
+            <input type="text" placeholder="X-99" disabled value="OPERATIVE_UNKOWN">
+        </div>
+
+        <div class="input-group">
+            <label>ACCESS CODE</label>
+            <input type="password" id="password" placeholder="ENTER CODE">
+        </div>
+
+        <button onclick="checkLogin()">AUTHENTICATE</button>
+
+        <div class="footer-text">
+            IP LOGGED: <span id="ip-addr">192.168.0.X</span> | SESSION: SECURE
+        </div>
     </div>
 
     <script>
-        const input = document.getElementById('passcode');
-        input.addEventListener('keyup', (e) => {
-            // Пароль: MAN (из песни "Are you MAN enough")
-            if (input.value.toUpperCase() === 'MAN') {
-                document.body.innerHTML = '<h1 class="access-granted">ACCESS GRANTED</h1>';
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+        // Фейковый IP для реализма
+        document.getElementById('ip-addr').innerText = (Math.random() * 255).toFixed(0) + '.' + (Math.random() * 255).toFixed(0) + '.14.88';
+
+        function checkLogin() {
+            const pass = document.getElementById('password').value.toUpperCase();
+            // Пароль "MAN" или "1488" (как пасхалка)
+            if (pass === 'MAN' || pass === '1488') {
+                document.querySelector('button').innerText = "ACCESS GRANTED...";
+                document.querySelector('button').style.background = "#28a745";
+                setTimeout(() => {
+                    window.location.href = "mainframe.html"; // Переход на главный сайт
+                }, 1500);
+            } else {
+                document.querySelector('button').innerText = "ACCESS DENIED";
+                document.querySelector('button').style.background = "#B22222";
+                setTimeout(() => {
+                    document.querySelector('button').innerText = "AUTHENTICATE";
+                    document.querySelector('button').style.background = "#2a3b55";
+                }, 1000);
             }
-        });
+        }
     </script>
 </body>
 </html>

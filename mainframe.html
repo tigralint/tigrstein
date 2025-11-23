@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OMEGA MAIN FRAME</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        body {
+            background: #000;
+            color: #00ff41; /* Хакерский зеленый или серьезный янтарный */
+            font-family: 'Share Tech Mono', monospace;
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 250px 1fr 300px; /* Три колонки */
+            grid-template-rows: 50px 1fr 30px; /* Шапка, Контент, Футер */
+            overflow: hidden;
+        }
+
+        /* Сетка интерфейса */
+        header {
+            grid-column: 1 / -1;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            background: #050505;
+            justify-content: space-between;
+        }
+
+        aside.sidebar-left {
+            border-right: 1px solid #333;
+            background: #020202;
+            padding: 20px;
+        }
+
+        main {
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png'); /* Текстура */
+            position: relative;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        aside.sidebar-right {
+            border-left: 1px solid #333;
+            background: #020202;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        footer {
+            grid-column: 1 / -1;
+            background: #111;
+            border-top: 1px solid #333;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 11px;
+        }
+
+        /* Элементы */
+        .logo { font-size: 20px; font-weight: bold; color: #fff; letter-spacing: 3px; }
+        .status { color: #B22222; animation: blink 1s infinite; }
+
+        /* Меню */
+        .nav-item {
+            display: block;
+            padding: 15px;
+            border: 1px solid #333;
+            margin-bottom: 10px;
+            color: #555;
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active {
+            border-color: #00ff41;
+            color: #00ff41;
+            background: rgba(0, 255, 65, 0.05);
+        }
+
+        /* Контент */
+        .data-window {
+            display: none; /* Скрываем все окна по умолчанию */
+            animation: fadeIn 0.5s;
+        }
+        .data-window.active { display: block; }
+
+        /* Эффект дропа (Sigma) */
+        #sigma-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 999; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+        }
+        .sigma-photo {
+            width: 400px; border: 5px solid #fff;
+            animation: shake 0.5s infinite; /* Тряска под бит */
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } }
+
+        /* Таблица логов */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { color: #fff; }
+        tr:hover { background: #111; color: #fff; }
+
+        /* Красный текст (секрет) */
+        .top-secret { color: #B22222; font-weight: bold; border: 1px solid #B22222; padding: 20px; margin-top: 20px; cursor: pointer;}
+        .top-secret:hover { background: #B22222; color: #000; }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop src="audio/placing_the_blame_intro.mp3"></audio>
+    <audio id="drop-music" src="audio/are_you_man_enough_drop.mp3"></audio>
+
+    <header>
+        <div class="logo">CIA // OMEGA DATABASE</div>
+        <div>LEVEL 5 CLEARANCE</div>
+        <div class="status">● LIVE CONNECTION</div>
+    </header>
+
+    <aside class="sidebar-left">
+        <div class="nav-item active" onclick="showTab('surveillance')">>> SURVEILLANCE</div>
+        <div class="nav-item" onclick="showTab('logs')">>> FLIGHT_LOGS.XLS</div>
+        <div class="nav-item" onclick="showTab('intercepts')">>> AUDIO INTERCEPTS</div>
+        <br><br>
+        <div class="nav-item" style="border-color: #B22222; color: #B22222;" onclick="showTab('sigma')">>> PROJECT: SIGMA</div>
+    </aside>
+
+    <main>
+        
+        <div id="surveillance" class="data-window active">
+            <h2>GLOBAL SURVEILLANCE GRID</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="background: #111; height: 200px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; color: #555;">CAM_01 [EPSTEIN ISLAND] - OFFLINE</div>
+                <div style="background: #111; height: 200px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; color: #555;">CAM_02 [MAR-A-LAGO] - RECORDING...</div>
+            </div>
+            <p>>> ANALYZING FACIAL RECOGNITION...</p>
+            <p>>> TARGET FOUND: D. TRUMP (MATCH 99%)</p>
+        </div>
+
+        <div id="logs" class="data-window">
+            <h2>FLIGHT LOGS: "LOLITA EXPRESS"</h2>
+            <p>SEARCH QUERY: *</p>
+            <table>
+                <tr><th>DATE</th><th>PASSENGER</th><th>DESTINATION</th><th>NOTES</th></tr>
+                <tr><td>2002-05-12</td><td>CLINTON, B.</td><td>ISLAND</td><td>Redacted</td></tr>
+                <tr><td>2003-01-09</td><td>TRUMP, D.</td><td>NY -> FL</td><td>Meeting with Handler</td></tr>
+                <tr><td>2004-11-20</td><td>PRINCE ANDREW</td><td>ISLAND</td><td>[DELETED]</td></tr>
+                <tr style="color: #ffff00;"><td>2025-09-02</td><td><strong>[ТВОЕ ИМЯ]</strong></td><td>UNKNOWN</td><td><strong>STATUS: VIP GUEST (THE BOSS)</strong></td></tr>
+            </table>
+        </div>
+
+        <div id="sigma" class="data-window">
+            <h1 style="font-size: 40px; color: #B22222;">PROJECT: SIGMA</h1>
+            <div class="top-secret" onclick="triggerSigma()">
+                [ CLICK TO DECRYPT MASTER FILE ]
+            </div>
+            <p>WARNING: THIS FILE CONTAINS THE IDENTITY OF THE TRUE PUPPET MASTER.</p>
+        </div>
+
+    </main>
+
+    <aside class="sidebar-right">
+        <div style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px;">INTERCEPTED CHATTER</div>
+        <div id="chat-log" style="font-family: monospace; color: #aaa;">
+            <p>[12:01] AGENT_K: Did you see the new logs?</p>
+            <p>[12:02] AGENT_J: Yeah. He is on the list.</p>
+            <p>[12:03] AGENT_K: Who? Trump?</p>
+            <p>[12:04] AGENT_J: No. The *real* boss. [REDACTED].</p>
+        </div>
+    </aside>
+
+    <footer>
+        SYSTEM UPTIME: 99.999% | ENCRYPTION: AES-256 | SERVER: LANGLEY_DC_04
+    </footer>
+
+    <div id="sigma-overlay">
+        <img src="assets/img/YOU_SIGMA.jpg" class="sigma-photo"> <h1 style="color: #fff; font-size: 50px; margin-top: 20px;">THE REAL OWNER</h1>
+        <h2 style="color: #B22222;">ARE YOU MAN ENOUGH?</h2>
+    </div>
+
+    <script>
+        // Запуск фоновой музыки при первом клике (браузеры блокируют автоплей)
+        document.body.addEventListener('click', () => {
+            const bg = document.getElementById('bg-music');
+            if (bg.paused) {
+                bg.volume = 0.3;
+                bg.play();
+            }
+        }, { once: true });
+
+        function showTab(tabId) {
+            // Скрываем все окна
+            document.querySelectorAll('.data-window').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            // Показываем нужное
+            document.getElementById(tabId).classList.add('active');
+            
+            // Подсвечиваем кнопку (это грубый способ, но рабочий)
+            event.target.classList.add('active');
+        }
+
+        function triggerSigma() {
+            const bg = document.getElementById('bg-music');
+            const drop = document.getElementById('drop-music');
+            const overlay = document.getElementById('sigma-overlay');
+
+            // Останавливаем эмбиент
+            bg.pause();
+
+            // Включаем трек с дропом
+            drop.currentTime = 0;
+            drop.play();
+
+            // Показываем оверлей
+            overlay.style.display = 'flex';
+
+            // Меняем цвета фона под бит (стробоскоп)
+            let colors = ['#000', '#300', '#000', '#111'];
+            let i = 0;
+            setInterval(() => {
+                overlay.style.backgroundColor = colors[i];
+                i = (i + 1) % colors.length;
+            }, 400); // Подгони под ритм песни
+        }
+
+        // Добавляем фейковые сообщения в чат
+        setInterval(() => {
+            const log = document.getElementById('chat-log');
+            const messages = [
+                "[SYSTEM]: Encrypted packet received.",
+                "[SYSTEM]: User location traced.",
+                "[AGENT_M]: He is watching us right now.",
+                "[AGENT_X]: Don't look at the camera."
+            ];
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            log.innerHTML += `<p>${randomMsg}</p>`;
+            log.scrollTop = log.scrollHeight;
+        }, 3000);
+    </script>
+</body>
+</html>
