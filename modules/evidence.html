@@ -1,41 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../css/terminal.css">
+    <meta charset="UTF-8">
+    <title>PHYSICAL EVIDENCE</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <h2>PHYSICAL EVIDENCE LOCKER</h2>
+    <p style="color: #666; margin-bottom: 20px;">ITEM #9942-B // SCANNED DOCUMENTS</p>
     
     <div class="grid-2">
+        
         <div class="paper-doc">
             <div class="stamp">TOP SECRET</div>
-            <h3 style="font-family: inherit; border: none;">RECEIPT #9942</h3>
-            <p><strong>VENDOR:</strong> SEPHORA (NYC)</p>
-            <p><strong>DATE:</strong> 10/05/2024</p>
-            <hr style="border-top: 1px dashed #000;">
-            <p>1x ORANGE SPRAY TAN (GALLON) ... $50.00</p>
-            <p>1x HAIR GLUE (INDUSTRIAL) ...... $20.00</p>
-            <p><strong>TOTAL:</strong> $70.00</p>
-            <hr style="border-top: 1px dashed #000;">
-            <p>PAID BY: <strong>[ТВОЕ ИМЯ]</strong></p>
-            <p>NOTE: "Make him look extra orange for the debate."</p>
+            <h3 style="font-family: inherit; border: none; text-align: center; font-size: 1.5rem;">SEPHORA NYC</h3>
+            <p style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px;">RECEIPT #0001488</p>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>1x ORANGE SPRAY TAN (GALLON)</span>
+                <span>$50.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>1x INDESTRUCTIBLE HAIR GLUE</span>
+                <span>$20.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span>1x TINY HAND LOTION</span>
+                <span>$15.00</span>
+            </div>
+            
+            <hr style="border-top: 1px dashed #000; border-bottom: none;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                <span>TOTAL:</span>
+                <span>$85.00</span>
+            </div>
+            <hr style="border-top: 1px dashed #000; border-bottom: none;">
+            
+            <p style="margin-top: 15px;">
+                <strong>PAID BY:</strong> [THE BOSS]<br>
+                <strong>SIGNATURE:</strong> <span style="font-family: 'Dancing Script', cursive; font-size: 1.2rem;">[Твоя Подпись]</span>
+            </p>
+            <p style="font-size: 0.8rem;">NOTE: "Make him look extra orange for the debate tonight."</p>
         </div>
 
-        <div class="paper-doc" style="transform: rotate(2deg);">
-            <div class="stamp">INTERCEPTED</div>
+        <div class="paper-doc" style="transform: rotate(2deg); background: #fcf8e3;">
+            <div class="stamp" style="border-color: #000; color: #000;">INTERCEPTED</div>
             <h3>HANDWRITTEN NOTE</h3>
-            <p>FROM: J. Epstein (Cell #4)</p>
-            <p>TO: The Boss</p>
+            <p><strong>FROM:</strong> J. Epstein (Cell #4, MCC New York)</p>
+            <p><strong>TO:</strong> The Architect</p>
             <p>--------------------------------</p>
-            <p>
-                "Please let me out. The fake suicide plan is ready.
-                The cameras are off. The guards are asleep.
-                I have the plastic surgery appointment in Brazil."
+            <p style="font-family: 'Courier New', cursive; font-size: 0.9rem; line-height: 1.4;">
+                "Boss, is the plan still on? The guards said they are going to 'sleep' at 3 AM. The cameras are already glitching. 
+                <br><br>
+                I have my bags packed for the Hollow Earth transport. Please tell me the submarine is ready. I hate the food here."
             </p>
-            <p style="margin-top: 20px;">
-                <strong>APPROVED BY:</strong> <span style="font-family: 'Courier New'; font-weight: bold;">[ТВОЯ ПОДПИСЬ]</span>
+            <p style="margin-top: 20px; border: 2px solid var(--alert-red); color: var(--alert-red); padding: 5px; text-align: center; transform: rotate(-5deg); font-weight: bold;">
+                APPROVED BY OMEGA COMMAND
             </p>
         </div>
+
     </div>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

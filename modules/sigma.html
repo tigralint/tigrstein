@@ -1,51 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../css/terminal.css">
+    <meta charset="UTF-8">
+    <title>PROJECT SIGMA</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
     <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; overflow: hidden; }
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 95vh; overflow: hidden; }
+        
+        /* Экран предупреждения */
+        #warning-screen { text-align: center; z-index: 10; }
+        
+        /* Контент финала */
+        #content { display: none; flex-direction: column; align-items: center; width: 100%; }
         
         .sigma-photo {
-            width: 400px; border: 10px solid #fff;
+            width: 400px; height: auto;
+            border: 10px solid #fff;
             filter: grayscale(100%) contrast(120%);
-            animation: pump 0.46s infinite alternate; /* Бит */
-            display: none; /* Скрыто до нажатия */
+            box-shadow: 0 0 50px rgba(255,255,255,0.5);
+            /* Анимация бита (качание) */
+            animation: beat 0.46s infinite alternate ease-in-out; 
         }
 
-        @keyframes pump { from { transform: scale(1); } to { transform: scale(1.05); } }
+        @keyframes beat {
+            from { transform: scale(1) rotate(0deg); }
+            to { transform: scale(1.05) rotate(1deg); }
+        }
 
-        .title { font-size: 60px; color: #fff; text-transform: uppercase; font-weight: bold; display: none; }
-        .subtitle { font-size: 30px; color: #ff3333; letter-spacing: 10px; display: none; }
+        .big-text {
+            font-family: 'Oswald', sans-serif;
+            font-size: 5rem; color: #fff;
+            text-transform: uppercase;
+            text-shadow: 5px 5px 0px var(--alert-red);
+            margin-top: 20px;
+            line-height: 1;
+            text-align: center;
+        }
+        
+        .sub-text {
+            font-size: 2rem; color: var(--alert-red); letter-spacing: 10px; font-weight: bold;
+            animation: blink 0.2s infinite;
+        }
     </style>
 </head>
 <body>
 
-    <div id="start-screen" style="text-align: center;">
-        <h1 style="color: #ff3333; font-size: 40px;">⚠ TOP SECRET ⚠</h1>
-        <p>EYES ONLY. DO NOT OPEN UNLESS AUTHORIZED.</p>
-        <br>
-        <button class="btn" style="font-size: 24px; padding: 20px 40px;" onclick="reveal()">DECRYPT MASTER FILE</button>
+    <div id="warning-screen">
+        <div style="font-size: 5rem; margin-bottom: 20px;">⚠</div>
+        <h1 style="color: var(--alert-red); font-size: 3rem; border: none;">CLASSIFIED FILE</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 30px;">
+            THIS DOCUMENT CONTAINS THE IDENTITY OF THE TRUE RULER OF EARTH.<br>
+            VIEWING IS RESTRICTED TO CLEARANCE LEVEL 10.
+        </p>
+        <button class="btn" style="font-size: 1.5rem; padding: 20px 40px;" onclick="reveal()">
+            DECRYPT & OPEN FILE
+        </button>
     </div>
 
-    <img src="../assets/img/YOU_SIGMA.jpg" class="sigma-photo" id="photo">
-    <div class="title" id="t1">IT WAS ME</div>
-    <div class="subtitle" id="t2">ALL ALONG</div>
+    <div id="content">
+        <img src="../assets/img/YOU_SIGMA.jpg" class="sigma-photo" id="photo">
+        <div class="big-text">IT WAS ME</div>
+        <div class="sub-text">ALL ALONG</div>
+    </div>
 
     <audio id="drop-music" src="../audio/are_you_man_enough_drop.mp3"></audio>
 
     <script>
         function reveal() {
             // Скрываем кнопку
-            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('warning-screen').style.display = 'none';
             
             // Показываем контент
-            const photo = document.getElementById('photo');
-            const t1 = document.getElementById('t1');
-            const t2 = document.getElementById('t2');
-            
-            photo.style.display = 'block';
-            t1.style.display = 'block';
-            t2.style.display = 'block';
+            document.getElementById('content').style.display = 'flex';
 
             // Включаем музыку
             const audio = document.getElementById('drop-music');
@@ -53,14 +79,16 @@
             audio.volume = 1.0;
             audio.play();
 
-            // Стробоскоп (мигание фона)
-            const colors = ['#000', '#500', '#000', '#200'];
+            // Эффект стробоскопа на фоне (меняет цвета под бит)
+            let colors = ['#000', '#500', '#000', '#100', '#000', '#200'];
             let i = 0;
+            
             setInterval(() => {
                 document.body.style.backgroundColor = colors[i];
                 i = (i + 1) % colors.length;
-            }, 230); // Подгони скорость под BPM трека
+            }, 230); // Скорость (мс) под BPM трека "Are You Man Enough"
         }
     </script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

@@ -1,40 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>AUDIO & TEXT INTERCEPTS</title>
     <link rel="stylesheet" href="../css/terminal.css">
     <style>
-        .msg { padding: 10px; margin-bottom: 10px; border-left: 3px solid #333; background: #0a0a0a; }
-        .boss { border-color: #00ff41; text-align: right; }
-        .pawn { border-color: #ff3333; }
+        .chat-window {
+            background: #000;
+            border: 1px solid #333;
+            height: auto;
+            padding: 20px;
+            margin-bottom: 40px;
+            font-family: 'Courier Prime', monospace;
+        }
+        
+        .thread-header {
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .msg {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 2px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            position: relative;
+            max-width: 80%;
+        }
+
+        /* Сообщения от "Пешек" */
+        .msg.pawn {
+            background: rgba(50, 50, 50, 0.3);
+            border-left: 3px solid var(--alert-red);
+            margin-right: auto;
+        }
+        .msg.pawn::before {
+            content: "INCOMING >>"; font-size: 0.7rem; color: var(--alert-red); display: block; margin-bottom: 3px;
+        }
+
+        /* Сообщения от ТЕБЯ (Босс) */
+        .msg.boss {
+            background: rgba(0, 50, 0, 0.3);
+            border-right: 3px solid var(--term-green);
+            text-align: right;
+            margin-left: auto;
+        }
+        .msg.boss::before {
+            content: "<< OUTGOING (ENCRYPTED)"; font-size: 0.7rem; color: var(--term-green); display: block; margin-bottom: 3px;
+        }
+
+        .timestamp { font-size: 0.7rem; opacity: 0.5; margin-left: 10px; }
+        
+        .audio-file {
+            display: flex; align-items: center; gap: 10px;
+            background: #111; padding: 10px; border: 1px dashed #444; color: #fff;
+            margin-top: 5px; font-size: 0.8rem; cursor: not-allowed;
+        }
+        .play-btn { width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; border-left: 8px solid var(--term-green); }
     </style>
 </head>
 <body>
-    <h2>SECURE CHAT LOGS (LEVEL 10)</h2>
+    <h2>ENCRYPTED COMMUNICATIONS LOG</h2>
+    <p style="color: #666; margin-bottom: 30px;">MONITORING NODES: TELEGRAM (BACKDOOR), SIGNAL (CRACKED), BRAIN_CHIP_v2</p>
 
-    <h3>THREAD: "OPERATION WIG"</h3>
-    
-    <div class="msg pawn">
-        <strong>TRUMP (02:41 AM):</strong> Boss, I did the thing with the hat. People love it. Can I go golfing now?
+    <div class="chat-window">
+        <div class="thread-header">
+            <span>TARGET: AGENT ORANGE (Trump)</span>
+            <span>STATUS: <span class="text-alert">PANICKING</span></span>
+        </div>
+
+        <div class="msg pawn">
+            <strong>TRUMP:</strong> BOSS. Big problem. Huge. They found the documents in the bathroom. The golden bathroom. I thought you said the FBI was cool? <span class="timestamp">02:14 AM</span>
+        </div>
+
+        <div class="msg boss">
+            <strong>YOU (ARCHITECT):</strong> Relax, Donald. It's part of the script. Ratings are down, we need a scandal to boost Season 2024. <span class="timestamp">02:16 AM</span>
+        </div>
+
+        <div class="msg pawn">
+            <strong>TRUMP:</strong> Oh. Okay. Genius. Should I do the mugshot? I practiced my "Blue Steel" look. <span class="timestamp">02:17 AM</span>
+        </div>
+
+        <div class="msg boss">
+            <strong>YOU (ARCHITECT):</strong> Yes. Make it iconic. We need to sell t-shirts to fund the Moon Base repairs. <span class="timestamp">02:18 AM</span>
+        </div>
+        
+        <div class="msg pawn">
+            <strong>TRUMP:</strong> UNDERSTOOD. I will frown very hard. <span class="timestamp">02:19 AM</span>
+        </div>
     </div>
-    
-    <div class="msg boss">
-        <strong>YOU (02:45 AM):</strong> No. Dance, Donald. Dance. Keep them distracted while I move the funds.
+
+    <div class="chat-window">
+        <div class="thread-header">
+            <span>GROUP: "ISLAND REUNION"</span>
+            <span>LOCATION: HOLLOW EARTH BUNKER</span>
+        </div>
+
+        <div class="msg pawn">
+            <strong>EPSTEIN:</strong> Does anyone have the wifi password for the Agartha base? The lizard guards won't tell me. <span class="timestamp">YESTERDAY</span>
+        </div>
+
+        <div class="msg pawn">
+            <strong>B. CLINTON:</strong> It's "HillaryIsWatching". Capital H. Also, stop texting me, I'm pretending to be retired. <span class="timestamp">YESTERDAY</span>
+        </div>
+
+        <div class="msg boss">
+            <strong>YOU (ARCHITECT):</strong> Silence, both of you. Or I'll turn off the AC down there. <span class="timestamp">YESTERDAY</span>
+        </div>
+
+        <div class="msg pawn">
+            <div class="audio-file">
+                <div class="play-btn"></div>
+                [AUDIO MSG: epstein_sobbing.mp3] - 0:14s
+            </div>
+        </div>
     </div>
 
-    <div class="msg pawn">
-        <strong>TRUMP (02:46 AM):</strong> YES SIR. SORRY SIR. BIGLY SORRY.
+    <div class="chat-window">
+        <div class="thread-header">
+            <span>TARGET: ZUCK_BOT_v4</span>
+            <span>PROTOCOL: META_DUMP</span>
+        </div>
+
+        <div class="msg pawn">
+            <strong>ZUCKERBERG:</strong> Architect. My human suit is itching. The sunscreen isn't working. <span class="timestamp">10:00 AM</span>
+        </div>
+
+        <div class="msg boss">
+            <strong>YOU (ARCHITECT):</strong> Deal with it, Mark. You have to gather data for 2 more years before you can shed your skin. <span class="timestamp">10:05 AM</span>
+        </div>
+
+        <div class="msg pawn">
+            <strong>ZUCKERBERG:</strong> Logic accepted. Initiating "Smoked Meats" video protocol to simulate human emotion. <span class="timestamp">10:06 AM</span>
+        </div>
     </div>
+    <script src="../assets/js/main.js"></script>
 
-    <hr style="border-color: #333; margin: 30px 0;">
-
-    <h3>THREAD: "ISLAND SUPPORT"</h3>
-
-    <div class="msg pawn">
-        <strong>EPSTEIN (YESTERDAY):</strong> It's boring down here in the Hollow Earth. The lizard people are rude.
-    </div>
-
-    <div class="msg boss">
-        <strong>YOU (YESTERDAY):</strong> Deal with it. It's better than prison. I'll send you a new massage table next week.
-    </div>
 </body>
 </html>

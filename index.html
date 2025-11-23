@@ -2,39 +2,122 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>US GOV // SECURE LOGIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US GOV // AUTHORIZED ACCESS ONLY</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-        body { background: #0b0f19; color: #a0aabf; font-family: 'Roboto', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-box { width: 400px; padding: 40px; background: #161b29; border: 1px solid #2b3648; text-align: center; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        input { width: 100%; padding: 10px; margin: 10px 0; background: #0b0f19; border: 1px solid #2b3648; color: #fff; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #2b3648; color: #fff; border: none; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
-        button:hover { background: #3b4a60; }
-        .seal { width: 80px; opacity: 0.5; margin-bottom: 20px; filter: grayscale(100%); }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        body {
+            background-color: #0a0e17;
+            color: #aab2c0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .login-container {
+            width: 450px;
+            background: #111625;
+            border: 1px solid #2a3b55;
+            padding: 40px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.8);
+            text-align: center;
+            position: relative;
+        }
+        .seal {
+            width: 120px; height: 120px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg') no-repeat center/contain;
+            margin: 0 auto 20px;
+            filter: grayscale(100%) opacity(0.8);
+        }
+        h1 { font-size: 18px; color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
+        h2 { font-size: 12px; color: #5e6d82; letter-spacing: 1px; margin-bottom: 30px; border-bottom: 1px solid #2a3b55; padding-bottom: 20px; }
+        
+        .warning-box {
+            background: rgba(178, 34, 34, 0.1);
+            border-left: 3px solid #B22222;
+            color: #B22222; font-size: 11px; text-align: left; padding: 15px; margin-bottom: 20px; line-height: 1.4;
+        }
+        
+        input {
+            width: 100%; background: #0d121f; border: 1px solid #2a3b55; color: #fff;
+            padding: 15px; font-family: monospace; font-size: 16px; box-sizing: border-box; margin-bottom: 20px; text-align: center; letter-spacing: 5px;
+        }
+        input:focus { outline: none; border-color: #4a90e2; box-shadow: 0 0 10px rgba(74, 144, 226, 0.2); }
+        
+        button {
+            width: 100%; background: #2a3b55; color: #fff; border: none; padding: 15px;
+            cursor: pointer; text-transform: uppercase; font-weight: bold; letter-spacing: 2px; transition: 0.3s;
+        }
+        button:hover { background: #4a90e2; box-shadow: 0 0 15px #4a90e2; }
+        
+        .footer-text { margin-top: 30px; font-size: 9px; color: #444; text-transform: uppercase; }
     </style>
 </head>
 <body>
-    <div class="login-box">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="seal">
-        <h2 style="font-size: 16px; letter-spacing: 2px;">CIA // OMEGA CLEARANCE</h2>
-        <p style="font-size: 12px; color: #ff4444; border: 1px solid #ff4444; padding: 10px;">WARNING: UNAUTHORIZED ACCESS IS A FEDERAL CRIME.</p>
-        
-        <input type="password" id="pwd" placeholder="ENTER ACCESS CODE">
-        <button onclick="login()">AUTHENTICATE</button>
+    <div class="login-container">
+        <div class="seal"></div>
+        <h1>Central Intelligence Agency</h1>
+        <h2>OMEGA CLEARANCE GATEWAY [V. 9.9]</h2>
+
+        <div class="warning-box">
+            <strong>FATAL WARNING:</strong> You are accessing a Level 10 Classified System. 
+            Biometric scanning is active. Unauthorized access attempts will result in immediate termination of the subject.
+        </div>
+
+        <input type="password" id="password" placeholder="___" maxlength="10">
+        <button onclick="checkLogin()">VERIFY CLEARANCE</button>
+
+        <div class="footer-text">
+            IP: <span id="ip">LOADING...</span> | LOC: <span id="loc">LANGLEY, VA</span> | ENCRYPTION: AES-256
+        </div>
     </div>
 
     <script>
-        function login() {
-            // Пароль: MAN (или 1488)
-            const p = document.getElementById('pwd').value.toUpperCase();
-            if(p === 'MAN' || p === '1488') {
-                document.querySelector('button').innerText = "ACCESS GRANTED...";
-                document.querySelector('button').style.background = "#28a745";
-                setTimeout(() => window.location.href = "mainframe.html", 1000);
+        document.getElementById('ip').innerText = (Math.random()*255).toFixed(0) + '.14.88.' + (Math.random()*255).toFixed(0);
+
+        const input = document.getElementById('password');
+        
+        // Проверка по Enter
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkLogin();
+            }
+        });
+
+        function checkLogin() {
+            const pass = input.value.toUpperCase();
+            const btn = document.querySelector('button');
+
+            // ПАРОЛЬ: MAN или 1488
+            if (pass === 'MAN' || pass === '1488') {
+                btn.innerText = "ACCESS GRANTED. WELCOME, HANDLER.";
+                btn.style.background = "#28a745";
+                btn.style.boxShadow = "0 0 20px #28a745";
+                
+                // Звуковой эффект можно добавить сюда, но браузер может блокировать
+                setTimeout(() => {
+                    window.location.href = "mainframe.html";
+                }, 1500);
             } else {
-                alert("ACCESS DENIED. YOUR IP HAS BEEN LOGGED.");
+                btn.innerText = "ACCESS DENIED // TRACE INITIATED";
+                btn.style.background = "#B22222";
+                input.value = "";
+                input.placeholder = "LOCKED";
+                input.disabled = true;
+                
+                setTimeout(() => {
+                    btn.innerText = "VERIFY CLEARANCE";
+                    btn.style.background = "#2a3b55";
+                    input.placeholder = "TRY AGAIN";
+                    input.disabled = false;
+                    input.focus();
+                }, 2000);
             }
         }
     </script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>

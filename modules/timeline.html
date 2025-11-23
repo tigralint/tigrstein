@@ -1,32 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../css/terminal.css">
+    <meta charset="UTF-8">
+    <title>TIMELINE EDIT</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <h2>GLOBAL TIMELINE MANIPULATION LOG</h2>
-    <p>USER: <strong>THE ARCHITECT</strong> | MODE: GOD MODE</p>
+    <p style="margin-bottom: 30px;">
+        USER: <strong>THE ARCHITECT</strong> | MODE: <span class="text-alert">GOD MODE (RW)</span>
+    </p>
 
-    <div class="card" style="margin-bottom: 10px; border-left: 5px solid #00ff41;">
+    <div class="card" style="border-left: 5px solid var(--term-green);">
         <h3>1912: OPERATION "ICEBERG"</h3>
-        <p><strong>TARGET:</strong> Titanic</p>
-        <p><strong>REASON:</strong> Eliminate opponents of the Federal Reserve.</p>
-        <p><strong>STATUS:</strong> SUCCESS. Banking system secured.</p>
+        <div class="grid-2">
+            <div>
+                <p><strong>TARGET:</strong> RMS Titanic</p>
+                <p><strong>OBJECTIVE:</strong> Eliminate opponents of the Federal Reserve creation.</p>
+                <p><strong>STATUS:</strong> <span style="color: var(--term-green)">SUCCESS</span></p>
+            </div>
+            <div style="font-size: 0.8rem; color: #888; border-left: 1px solid #333; padding-left: 10px;">
+                NOTES: J.P. Morgan cancelled his ticket 2 hours before departure as instructed. Iceberg deployment successful.
+            </div>
+        </div>
     </div>
 
-    <div class="card" style="margin-bottom: 10px; border-left: 5px solid #00ff41;">
+    <div class="card" style="border-left: 5px solid var(--term-green);">
         <h3>1969: OPERATION "SOUNDSTAGE"</h3>
-        <p><strong>OBJECTIVE:</strong> Fake Moon Landing.</p>
-        <p><strong>DIRECTOR:</strong> Stanley Kubrick.</p>
-        <p><strong>EXECUTIVE PRODUCER:</strong> <span class="redacted">[YOUR ANCESTOR]</span>.</p>
-        <p><strong>NOTE:</strong> Kubrick did a good job. Flag waving was a nice touch.</p>
+        <div class="grid-2">
+            <div>
+                <p><strong>TARGET:</strong> The Moon (Fake)</p>
+                <p><strong>DIRECTOR:</strong> Stanley Kubrick</p>
+                <p><strong>EXECUTIVE PRODUCER:</strong> <span class="redacted">[YOUR ANCESTOR]</span></p>
+            </div>
+            <div style="font-size: 0.8rem; color: #888; border-left: 1px solid #333; padding-left: 10px;">
+                NOTES: Filmed in Nevada, Area 51. Kubrick demanded 200 takes for the flag planting scene. Budget exceeded NASA's actual rocket cost.
+            </div>
+        </div>
     </div>
 
-    <div class="card" style="margin-bottom: 10px; border-left: 5px solid #00ff41;">
-        <h3>2024: OPERATION "SIGMA"</h3>
-        <p><strong>OBJECTIVE:</strong> Prepare humanity for the Great Reveal.</p>
-        <p><strong>ASSETS ACTIVE:</strong> Trump, Kanye, Elon.</p>
-        <p><strong>STATUS:</strong> IN PROGRESS...</p>
+    <div class="card" style="border-left: 5px solid var(--alert-red);">
+        <h3>2001: OPERATION "STEEL BEAMS"</h3>
+        <p>DATA CORRUPTED... <span class="redacted">WTC7_PULL_IT.exe</span> executed.</p>
+        <p><strong>STATUS:</strong> ARCHIVED (DO NOT OPEN)</p>
     </div>
+
+    <div class="card" style="border-left: 5px solid #ffff00; box-shadow: 0 0 10px rgba(255, 255, 0, 0.1);">
+        <h3>2025: OPERATION "SIGMA RISE"</h3>
+        <div class="grid-2">
+            <div>
+                <p><strong>OBJECTIVE:</strong> Prepare humanity for the Great Reveal.</p>
+                <p><strong>ACTIVE AGENTS:</strong> Trump, Kanye, Elon, Tate.</p>
+                <p><strong>STATUS:</strong> <span class="text-alert">IN PROGRESS...</span></p>
+            </div>
+            <div style="font-size: 0.8rem; color: #888; border-left: 1px solid #333; padding-left: 10px;">
+                CURRENT PHASE: "Mass Confusion". Flooding internet with AI memes to lower collective IQ before the takeover.
+            </div>
+        </div>
+    </div>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

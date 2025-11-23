@@ -1,31 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <title>TARGET PROFILES</title>
     <link rel="stylesheet" href="../css/terminal.css">
     <style>
-        .mugshot { width: 100px; height: 120px; object-fit: cover; border: 2px solid #fff; filter: grayscale(100%); float: left; margin-right: 20px; }
-        .profile { overflow: hidden; margin-bottom: 30px; border-bottom: 1px dashed #333; padding-bottom: 20px; }
+        .profile-card {
+            border: 1px solid #333;
+            background: rgba(0, 20, 0, 0.4);
+            margin-bottom: 30px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 20px;
+            transition: 0.3s;
+        }
+        .profile-card:hover {
+            border-color: var(--term-green);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+        .mugshot-container {
+            position: relative;
+            width: 150px; height: 180px;
+        }
+        .mugshot {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border: 2px solid #555;
+            filter: grayscale(100%) contrast(1.2);
+        }
+        .stamp-overlay {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            border: 3px solid var(--alert-red);
+            color: var(--alert-red);
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 5px 10px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            text-shadow: 0 0 5px #000;
+            background: rgba(0,0,0,0.7);
+        }
+        
+        /* Статы */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+        .stat-label { color: #888; font-size: 0.8rem; }
+        .stat-value { color: #fff; font-weight: bold; }
+        
+        /* Прогресс-бары */
+        .bar-container {
+            background: #111; height: 8px; width: 100%; margin-top: 5px; border: 1px solid #333;
+        }
+        .bar-fill {
+            height: 100%; background: var(--term-green);
+            position: relative;
+        }
+        /* Мигающая точка на баре */
+        .bar-fill::after {
+            content: ""; position: absolute; right: 0; top: 0; height: 100%; width: 2px; background: #fff; box-shadow: 0 0 5px #fff;
+        }
+
+        .notes {
+            grid-column: 1 / -1;
+            margin-top: 15px;
+            border-top: 1px dashed #333;
+            padding-top: 10px;
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        .highlight { color: var(--term-green); }
+        .warning { color: var(--alert-red); }
     </style>
 </head>
 <body>
-    <h2>ACTIVE ASSETS // PUPPETS</h2>
+    <h2>ACTIVE ASSETS // PUPPET ROSTER</h2>
+    <p style="margin-bottom: 30px; font-size: 0.9rem; color: #666;">
+        CLEARANCE: LEVEL 9 <br>
+        INSTRUCTIONS: MAINTAIN ILLUSION OF FREE WILL. INTERVENE ONLY IF NECESSARY.
+    </p>
 
-    <div class="profile">
-        <img src="../assets/img/trump_angry.jpg" class="mugshot" alt="NO PHOTO">
-        <h3>ASSET: DONALD TRUMP</h3>
-        <p><strong>CODENAME:</strong> ORANGE MAN</p>
-        <p><strong>ROLE:</strong> MASS DISTRACTION</p>
-        <p><strong>HANDLER:</strong> <span class="redacted">[YOU]</span></p>
-        <p class="text-alert">INSTRUCTIONS: Keep him posting on Truth Social. If he stops, global entertainment ratings drop.</p>
+    <div class="profile-card">
+        <div class="mugshot-container">
+            <img src="../assets/img/trump_angry.jpg" class="mugshot" alt="NO SIGNAL">
+            <div class="stamp-overlay">ACTIVE</div>
+        </div>
+        <div>
+            <h3 style="margin: 0 0 10px 0; color: #fff;">ASSET: DONALD J. TRUMP</h3>
+            <div class="stats-grid">
+                <div>
+                    <span class="stat-label">CODENAME:</span> <span class="stat-value">ORANGE MAN</span>
+                </div>
+                <div>
+                    <span class="stat-label">HANDLER:</span> <span class="redacted">[YOU]</span>
+                </div>
+                
+                <div>
+                    <span class="stat-label">LOYALTY:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 92%;"></div></div>
+                </div>
+                <div>
+                    <span class="stat-label">VOLATILITY:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 99%; background: var(--alert-red);"></div></div>
+                </div>
+            </div>
+            <div class="notes">
+                <strong class="highlight">MISSION PROTOCOL:</strong> "Operation Chaos". Subject is tasked with distracting the global populace while we move the gold reserves to Mars. <br>
+                <strong class="warning">WARNING:</strong> Subject requires constant validation. If he stops posting on Truth Social, global meme economy crashes. Apply "Spray Tan" reward weekly.
+            </div>
+        </div>
     </div>
 
-    <div class="profile">
-        <img src="../assets/img/epstein_mugshot.jpg" class="mugshot" alt="NO PHOTO">
-        <h3>ASSET: JEFFREY EPSTEIN</h3>
-        <p><strong>CODENAME:</strong> ISLAND BOY</p>
-        <p><strong>STATUS:</strong> <span class="redacted">EXTRACTED TO HOLLOW EARTH</span></p>
-        <p><strong>HANDLER:</strong> <span class="redacted">[YOU]</span></p>
-        <p><strong>NOTES:</strong> Plastic surgery complete. Currently managing the Antarctica branch.</p>
+    <div class="profile-card">
+        <div class="mugshot-container">
+            <img src="../assets/img/epstein_mugshot.jpg" class="mugshot" alt="NO SIGNAL">
+            <div class="stamp-overlay" style="border-color: #ffff00; color: #ffff00;">EXTRACTED</div>
+        </div>
+        <div>
+            <h3 style="margin: 0 0 10px 0; color: #fff;">ASSET: JEFFREY EPSTEIN</h3>
+            <div class="stats-grid">
+                <div>
+                    <span class="stat-label">CODENAME:</span> <span class="stat-value">ISLAND BOY</span>
+                </div>
+                <div>
+                    <span class="stat-label">LOCATION:</span> <span class="redacted">HOLLOW EARTH (SECTOR 7)</span>
+                </div>
+                
+                <div>
+                    <span class="stat-label">USEFULNESS:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 15%;"></div></div>
+                </div>
+                <div>
+                    <span class="stat-label">SECRETS HELD:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 100%;"></div></div>
+                </div>
+            </div>
+            <div class="notes">
+                <strong class="highlight">STATUS UPDATE:</strong> Successful extraction via "Fake Suicide" protocol (2019). Plastic surgery complete. Subject is currently managing the Antarctica Ice Wall maintenance crew. <br>
+                <strong class="warning">NOTE:</strong> Subject keeps asking for "fresh towels". Request denied.
+            </div>
+        </div>
     </div>
+
+    <div class="profile-card">
+        <div class="mugshot-container">
+            <img src="../assets/img/zuck_robot.jpg" class="mugshot" alt="NO SIGNAL">
+            <div class="stamp-overlay" style="transform: rotate(10deg); font-size: 1rem;">AI UNIT</div>
+        </div>
+        <div>
+            <h3 style="margin: 0 0 10px 0; color: #fff;">ASSET: MARK ZUCKERBERG</h3>
+            <div class="stats-grid">
+                <div>
+                    <span class="stat-label">MODEL:</span> <span class="stat-value">REPTILIAN v4.0</span>
+                </div>
+                <div>
+                    <span class="stat-label">ROLE:</span> <span class="stat-value">DATA HARVESTER</span>
+                </div>
+                
+                <div>
+                    <span class="stat-label">BATTERY LEVEL:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 65%; background: cyan;"></div></div>
+                </div>
+                <div>
+                    <span class="stat-label">HUMANITY:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 2%; background: var(--alert-red);"></div></div>
+                </div>
+            </div>
+            <div class="notes">
+                <strong class="highlight">MAINTENANCE LOG:</strong> Subject overheats when asked about privacy. Requires regular application of "Sweet Baby Ray's BBQ Sauce" to lubricate joints. <br>
+                <strong class="warning">GLITCH DETECTED:</strong> Legs bend backwards sometimes. Keep off camera.
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-card">
+        <div class="mugshot-container">
+            <img src="../assets/img/musk.jpg" class="mugshot" alt="NO SIGNAL">
+            <div class="stamp-overlay">ROGUE?</div>
+        </div>
+        <div>
+            <h3 style="margin: 0 0 10px 0; color: #fff;">ASSET: ELON MUSK</h3>
+            <div class="stats-grid">
+                <div>
+                    <span class="stat-label">CODENAME:</span> <span class="stat-value">STARMAN</span>
+                </div>
+                <div>
+                    <span class="stat-label">OBJECTIVE:</span> <span class="stat-value">RETURN HOME (MARS)</span>
+                </div>
+                
+                <div>
+                    <span class="stat-label">DOGECOIN BAGS:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 100%; background: gold;"></div></div>
+                </div>
+                <div>
+                    <span class="stat-label">SANITY:</span>
+                    <div class="bar-container"><div class="bar-fill" style="width: 40%; background: orange;"></div></div>
+                </div>
+            </div>
+            <div class="notes">
+                <strong class="highlight">PROTOCOL:</strong> Subject believes he is the main character. Let him believe it. Use Neuralink to upload direct orders during sleep. <br>
+                <strong class="warning">ALERT:</strong> Stop him from buying countries. Argentina purchase attempt blocked.
+            </div>
+        </div>
+    </div>
+    <script src="../assets/js/main.js"></script>
+
 </body>
 </html>

@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../css/terminal.css">
+    <meta charset="UTF-8">
+    <title>SHADOW FINANCE</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <h2>SHADOW ACCOUNTS MANAGER</h2>
@@ -9,23 +11,30 @@
     <div class="grid-2">
         <div class="card">
             <h3>TOTAL LIQUIDITY</h3>
-            <div style="font-size: 40px; color: #fff;">$ ∞</div>
-            <p style="font-size: 12px; color: #666;">CURRENCY: USD / BTC / GOLD / SOULS</p>
+            <div style="font-size: 4rem; color: #fff; margin: 20px 0; text-shadow: 0 0 10px #fff;">$ ∞</div>
+            <p style="font-size: 0.8rem; color: #666;">CURRENCY: USD / BTC / GOLD / SOULS</p>
+            <button class="btn">PRINT MORE MONEY (FED)</button>
         </div>
+        
         <div class="card">
-            <h3>ASSETS CONTROLLED</h3>
-            <p>> BLACKROCK: <span style="color: #00ff41">OWNED</span></p>
-            <p>> VANGUARD: <span style="color: #00ff41">OWNED</span></p>
-            <p>> THE FED: <span style="color: #00ff41">OWNED</span></p>
+            <h3>ASSET PORTFOLIO</h3>
+            <ul style="list-style: none; padding: 0; line-height: 2;">
+                <li>> BLACKROCK: <span style="color: var(--term-green); float: right;">OWNED (100%)</span></li>
+                <li>> VANGUARD: <span style="color: var(--term-green); float: right;">OWNED (100%)</span></li>
+                <li>> BITCOIN CEO: <span style="color: var(--term-green); float: right;">IT'S YOU</span></li>
+                <li>> APPLE: <span style="color: var(--term-green); float: right;">OWNED (SHELL CORP)</span></li>
+            </ul>
         </div>
     </div>
 
-    <h3>RECENT TRANSACTIONS</h3>
-    <ul>
-        <li>Sent $50,000,000,000 to NASA (Project: "Flat Earth Coverup")</li>
-        <li>Bought Argentina (Vacation home)</li>
-        <li>Paid Mark Zuckerberg (Robot maintenance fee)</li>
-        <li>Bribe to Time Traveler (Timeline correction 2012)</li>
-    </ul>
+    <h3>RECENT TRANSACTIONS (SWIFT-X)</h3>
+    <table>
+        <tr><th>DATE</th><th>RECIPIENT</th><th>AMOUNT</th><th>MEMO</th></tr>
+        <tr><td>TODAY</td><td>NASA (Black Ops)</td><td>$50,000,000,000</td><td>Project "Flat Earth Dome Repair"</td></tr>
+        <tr><td>YESTERDAY</td><td>Argentina</td><td>$1 (Symbolic)</td><td>Bought the whole country for vacation.</td></tr>
+        <tr><td>10/05</td><td>Mark Zuckerberg</td><td>$500,000</td><td>Robot Maintenance Fee (Oil change)</td></tr>
+        <tr><td>01/01</td><td>Time Traveler</td><td>$999,999,999</td><td>Bribe to fix 2012 Timeline glitch</td></tr>
+    </table>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>

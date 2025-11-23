@@ -3,47 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <title>OMEGA OS // ADMINISTRATOR</title>
-    <link rel="stylesheet" href="css/terminal.css">
-    <style>
-        body { padding: 0; height: 100vh; display: grid; grid-template-rows: 50px 1fr; overflow: hidden; }
+    <link rel="stylesheet" href="assets/css/style.css"> <style>
+        body { padding: 0; height: 100vh; display: grid; grid-template-rows: 60px 1fr 30px; overflow: hidden; }
         
-        /* Шапка */
+        /* ШАПКА */
         header {
-            background: #0a0a0a; border-bottom: 1px solid var(--term-green);
-            display: flex; align-items: center; padding: 0 20px; justify-content: space-between;
-            z-index: 20;
+            background: #050505; border-bottom: 1px solid var(--term-green);
+            display: flex; align-items: center; padding: 0 30px; justify-content: space-between;
+            z-index: 20; box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
         }
+        .logo { font-size: 24px; font-weight: bold; letter-spacing: 3px; display: flex; align-items: center; gap: 15px; }
+        .logo img { width: 40px; height: 40px; filter: grayscale(100%); }
         
-        /* Макет */
-        .layout { display: grid; grid-template-columns: 260px 1fr; height: 100%; }
+        /* СЕТКА */
+        .layout { display: grid; grid-template-columns: 280px 1fr 300px; height: 100%; }
         
-        /* Сайдбар (Меню) */
-        aside {
-            background: #020202; border-right: 1px solid #333; padding: 15px;
+        /* САЙДБАР (МЕНЮ) */
+        aside.left-panel {
+            background: #020202; border-right: 1px solid #333; padding: 20px;
             display: flex; flex-direction: column; gap: 5px;
+            overflow-y: auto;
         }
         
-        .nav-category { color: #555; font-size: 10px; letter-spacing: 2px; margin: 15px 0 5px 0; font-weight: bold; }
+        .nav-category { 
+            color: #666; font-size: 11px; letter-spacing: 2px; margin: 20px 0 10px 0; 
+            font-weight: bold; border-bottom: 1px solid #222; padding-bottom: 5px; 
+        }
         
         .nav-btn {
-            display: block; padding: 10px 15px; text-decoration: none; color: #888;
-            border-left: 2px solid transparent; transition: 0.2s; font-size: 13px;
-            cursor: pointer;
+            display: flex; align-items: center; padding: 12px 15px; text-decoration: none; color: #888;
+            border-left: 3px solid transparent; transition: 0.2s; font-size: 14px; cursor: pointer;
+            background: rgba(255,255,255,0.02); margin-bottom: 5px;
         }
-        .nav-btn:hover, .nav-btn.active {
-            background: #111; color: #fff; border-left-color: var(--term-green);
-            text-shadow: 0 0 5px var(--term-green);
+        .nav-btn:hover { background: #111; color: #fff; padding-left: 20px; }
+        .nav-btn.active {
+            background: rgba(0, 255, 65, 0.05); color: #fff; border-left-color: var(--term-green);
+            text-shadow: 0 0 8px var(--term-green);
         }
-        .nav-btn::before { content: "> "; opacity: 0.3; }
-        .nav-btn.active::before { content: "█ "; opacity: 1; }
-
-        /* Основной экран (iframe) */
-        main { position: relative; background: #000; }
+        
+        /* ЭКРАН (IFRAME) */
+        main { position: relative; background: #000; overflow: hidden; }
         iframe {
             width: 100%; height: 100%; border: none;
-            /* Фоновая текстура для пустых мест */
-            background-image: radial-gradient(#111 10%, transparent 10%);
-            background-size: 10px 10px;
+            background-image: radial-gradient(#111 15%, transparent 16%), radial-gradient(#111 15%, transparent 16%);
+            background-size: 10px 10px; background-position: 0 0, 5px 5px;
+        }
+
+        /* ПРАВАЯ ПАНЕЛЬ (ЛОГИ) */
+        aside.right-panel {
+            background: #030303; border-left: 1px solid #333; padding: 15px;
+            font-size: 12px; color: #555; font-family: 'Share Tech Mono', monospace;
+            display: flex; flex-direction: column;
+        }
+        .log-header { color: #fff; border-bottom: 1px solid #333; margin-bottom: 10px; padding-bottom: 5px; }
+        #system-log { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column-reverse; } /* Новые логи сверху */
+        .log-entry { margin-bottom: 6px; border-bottom: 1px dashed #111; padding-bottom: 2px; }
+        .log-time { color: var(--term-green); margin-right: 8px; }
+
+        /* ФУТЕР */
+        footer {
+            background: #050505; border-top: 1px solid #333;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+            font-size: 11px; color: #444;
         }
     </style>
 </head>
@@ -52,38 +73,53 @@
     <audio id="bg-music" loop src="audio/placing_the_blame_intro.mp3"></audio>
     
     <header>
-        <div>SYSTEM: <strong>DEEP_STATE_CORE_v9</strong></div>
-        <div class="text-alert">⚠ VPN: ENCRYPTED (NODE: LANGLEY_DC)</div>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg">
+            OMEGA // CORE
+        </div>
+        <div class="text-alert">⚠ VPN: ENCRYPTED (NODE: LANGLEY_DC_01)</div>
     </header>
 
     <div class="layout">
-        <aside>
-            <div class="nav-category">DASHBOARD</div>
-            <a href="modules/dashboard.html" target="screen" class="nav-btn active" onclick="select(this)">MAIN_VIEW</a>
+        <aside class="left-panel">
+            <div class="nav-category">COMMAND CENTER</div>
+            <a href="modules/dashboard.html" target="screen" class="nav-btn active" onclick="select(this)">DASHBOARD VIEW</a>
             
-            <div class="nav-category">DATABASE</div>
-            <a href="modules/targets.html" target="screen" class="nav-btn" onclick="select(this)">TARGET_PROFILES</a>
+            <div class="nav-category">DATABASE (CLASSIFIED)</div>
+            <a href="modules/targets.html" target="screen" class="nav-btn" onclick="select(this)">TARGET PROFILES</a>
             <a href="modules/flight_logs.html" target="screen" class="nav-btn" onclick="select(this)">FLIGHT_LOGS.XLS</a>
             <a href="modules/timeline.html" target="screen" class="nav-btn" onclick="select(this)">WORLD_HISTORY_EDIT</a>
             
             <div class="nav-category">SURVEILLANCE</div>
-            <a href="modules/intercepts.html" target="screen" class="nav-btn" onclick="select(this)">AUDIO_INTERCEPTS</a>
-            <a href="modules/evidence.html" target="screen" class="nav-btn" onclick="select(this)">PHYSICAL_EVIDENCE</a>
-            <a href="modules/finance.html" target="screen" class="nav-btn" onclick="select(this)">SHADOW_FINANCE</a>
+            <a href="modules/intercepts.html" target="screen" class="nav-btn" onclick="select(this)">AUDIO INTERCEPTS</a>
+            <a href="modules/evidence.html" target="screen" class="nav-btn" onclick="select(this)">PHYSICAL EVIDENCE</a>
+            <a href="modules/finance.html" target="screen" class="nav-btn" onclick="select(this)">SHADOW FINANCE</a>
 
             <div style="flex-grow: 1"></div>
-            <div style="border-top: 1px solid #333; padding-top: 10px;">
-                <a href="modules/sigma.html" target="screen" class="nav-btn" style="color: var(--alert-red); border-color: var(--alert-red);" onclick="select(this)">!!! PROJECT_SIGMA !!!</a>
+            <div style="border-top: 1px solid #333; padding-top: 15px;">
+                <a href="modules/sigma.html" target="screen" class="nav-btn" style="color: var(--alert-red); border-color: var(--alert-red); font-weight: bold;" onclick="select(this)">!!! PROJECT_SIGMA !!!</a>
             </div>
         </aside>
 
         <main>
             <iframe src="modules/dashboard.html" name="screen" id="main-frame"></iframe>
         </main>
+
+        <aside class="right-panel">
+            <div class="log-header">SYSTEM ACTIVITY LOG</div>
+            <div id="system-log">
+                </div>
+        </aside>
     </div>
 
+    <footer>
+        <div>SERVER: DEEP_STATE_MAIN_09</div>
+        <div>UPTIME: 99.9999%</div>
+        <div>ENCRYPTION: MILITARY GRADE (AES-256)</div>
+    </footer>
+
     <script>
-        // Активация звука при первом клике
+        // Запуск музыки при первом клике
         document.body.addEventListener('click', () => {
             const bg = document.getElementById('bg-music');
             if(bg.paused) { bg.volume = 0.3; bg.play(); }
@@ -93,7 +129,33 @@
         function select(el) {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             el.classList.add('active');
+            addLog("ACCESSING MODULE: " + el.innerText);
         }
+
+        // Генератор логов
+        function addLog(text) {
+            const logContainer = document.getElementById('system-log');
+            const time = new Date().toLocaleTimeString('en-US', {hour12:false});
+            const entry = `<div class="log-entry"><span class="log-time">[${time}]</span> ${text}</div>`;
+            logContainer.insertAdjacentHTML('afterbegin', entry);
+        }
+
+        // Фейковые события для атмосферы
+        setInterval(() => {
+            const events = [
+                "Encrypted packet received from Antarctica", 
+                "Ping from Sector 7 (Hollow Earth)", 
+                "Botnet 404 update complete", 
+                "Tracing connection...", 
+                "Financial transaction verified: $50B moved", 
+                "Asset 'Trump' uploaded new Truth Social post",
+                "Satellite realignment complete",
+                "Suppressing unauthorized leak in Reddit"
+            ];
+            const rnd = events[Math.floor(Math.random() * events.length)];
+            addLog(rnd);
+        }, 3500);
     </script>
+    <script src="assets/js/main.js"></script>
 </body>
 </html>
