@@ -2,290 +2,252 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>OMEGA OS // ADMINISTRATOR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMEGA // TIGRANES SYSTEM</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        body { padding: 0; height: 100vh; display: grid; grid-template-rows: 60px 1fr 30px; overflow: hidden; }
+        /* Специфичные стили для лэйаута оболочки */
+        body { display: grid; grid-template-rows: 50px 1fr 30px; height: 100vh; overflow: hidden; }
         
-        /* --- ШАПКА --- */
+        /* HEADER */
         header {
-            background: #050505; border-bottom: 1px solid var(--term-green);
-            display: flex; align-items: center; padding: 0 20px; justify-content: space-between;
-            z-index: 200; box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+            background: #050505; border-bottom: 1px solid #333;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 15px;
+            z-index: 200;
         }
-        .logo { font-size: 22px; font-weight: bold; letter-spacing: 3px; display: flex; align-items: center; gap: 15px; color: #fff; }
-        .logo img { width: 35px; height: 35px; filter: grayscale(100%); }
-        .header-right { display: flex; gap: 20px; font-size: 12px; align-items: center; }
-        .defcon { border: 1px solid var(--alert-red); color: var(--alert-red); padding: 5px 10px; font-weight: bold; animation: blink 2s infinite; }
+        .logo-area { display: flex; align-items: center; gap: 10px; font-weight: bold; letter-spacing: 2px; }
+        .logo-img { width: 30px; filter: grayscale(100%); }
+        
+        .sys-status { display: flex; gap: 15px; font-size: 11px; align-items: center; }
+        
+        /* MUTE BUTTON */
+        #mute-btn {
+            background: transparent; border: 1px solid #333; color: #666;
+            width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s;
+        }
+        #mute-btn:hover { border-color: var(--term-green); color: var(--term-green); }
+        #mute-btn.active { color: red; border-color: red; }
 
-        /* --- МАКЕТ (3 КОЛОНКИ) --- */
-        .layout { display: grid; grid-template-columns: 260px 1fr 300px; height: 100%; position: relative; }
-        
-        /* --- ЛЕВАЯ КОЛОНКА (МЕНЮ) --- */
+        /* LAYOUT */
+        .layout-grid { display: grid; grid-template-columns: 240px 1fr 280px; height: 100%; position: relative; }
+
+        /* SIDEBAR */
         aside.left-panel {
-            background: #020202; border-right: 1px solid #333; padding: 10px;
-            display: flex; flex-direction: column; overflow-y: auto;
+            background: #020202; border-right: 1px solid #333;
+            display: flex; flex-direction: column; padding: 10px 0; overflow-y: auto;
         }
-        
-        .nav-category { 
-            color: #666; font-size: 10px; letter-spacing: 2px; margin: 15px 0 5px 10px; 
-            font-weight: bold;
+        .nav-item {
+            padding: 12px 20px; color: #888; font-size: 13px; cursor: pointer; border-left: 2px solid transparent;
+            display: flex; align-items: center; gap: 10px;
         }
-        
-        .nav-btn {
-            display: flex; align-items: center; padding: 10px 15px; text-decoration: none; color: #888;
-            border-left: 2px solid transparent; transition: 0.2s; font-size: 13px; cursor: pointer;
-            margin-bottom: 2px;
-        }
-        .nav-btn:hover { background: #111; color: #fff; padding-left: 20px; }
-        .nav-btn.active {
-            background: rgba(0, 255, 65, 0.05); color: #fff; border-left-color: var(--term-green);
-            text-shadow: 0 0 5px var(--term-green);
-        }
-        
-        /* --- ЦЕНТР (IFRAME) --- */
+        .nav-item:hover { color: #fff; background: #080808; }
+        .nav-item.active { border-left-color: var(--term-green); color: var(--term-green); background: rgba(0,255,65,0.05); }
+        .nav-header { font-size: 10px; color: #444; margin: 15px 0 5px 20px; letter-spacing: 2px; font-weight: bold; }
+
+        /* MAIN SCREEN */
         main { position: relative; background: #000; overflow: hidden; }
         iframe {
             width: 100%; height: 100%; border: none;
-            background-image: radial-gradient(#111 15%, transparent 16%), radial-gradient(#111 15%, transparent 16%);
-            background-size: 10px 10px; background-position: 0 0, 5px 5px;
+            transition: opacity 0.3s ease;
+            opacity: 1;
         }
+        iframe.loading { opacity: 0; } /* Для плавного перехода */
 
-        /* --- ПРАВАЯ КОЛОНКА (ЛОГИ) --- */
+        /* LOGS PANEL */
         aside.right-panel {
-            background: #030303; border-left: 1px solid #333; padding: 15px;
-            font-size: 11px; color: #555; font-family: 'Share Tech Mono', monospace;
-            display: flex; flex-direction: column;
+            background: #030303; border-left: 1px solid #333;
+            display: flex; flex-direction: column; padding: 10px;
+            font-size: 11px; color: #666;
         }
-        .log-header { color: #fff; border-bottom: 1px solid #333; margin-bottom: 10px; padding-bottom: 5px; }
-        #system-log { 
-            flex-grow: 1; overflow-y: hidden; /* Скрываем скроллбар */
-            display: flex; flex-direction: column; justify-content: flex-end; /* Новые снизу */
-        }
-        .log-entry { margin-bottom: 5px; border-bottom: 1px dashed #111; padding-bottom: 2px; animation: fadeSlide 0.3s ease-out; }
-        .log-time { color: var(--term-green); margin-right: 5px; }
-        @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #log-feed { flex-grow: 1; overflow-y: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+        .log-line { margin-bottom: 4px; border-bottom: 1px dashed #111; padding-bottom: 2px; }
+        .log-ts { color: var(--term-green); margin-right: 5px; }
 
-        /* --- ФУТЕР (TICKER) --- */
+        /* FOOTER */
         footer {
-            background: #050505; border-top: 1px solid #333;
-            /* Footer теперь просто контейнер для тикера и инфо */
-            display: grid; grid-template-columns: 1fr 300px;
-            overflow: hidden;
+            background: #000; border-top: 1px solid #333;
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 11px; color: #555;
         }
-        .footer-info {
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-            font-size: 10px; color: #444; letter-spacing: 1px; border-left: 1px solid #333;
-            background: #000; z-index: 10;
-        }
+        .ticker { flex-grow: 1; overflow: hidden; white-space: nowrap; margin-right: 20px; position: relative; }
+        .ticker span { display: inline-block; padding-left: 100%; animation: scrollText 20s linear infinite; color: var(--term-green); }
+        @keyframes scrollText { 0% {transform:translateX(0);} 100% {transform:translateX(-100%);} }
+        
+        .user-badge { padding: 0 15px; border-left: 1px solid #333; color: #fff; font-weight: bold; }
 
-        /* --- ФИНАЛЬНЫЙ ЭКРАН (ДРОП) --- */
-        #sigma-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: none;
-            flex-direction: column; justify-content: center; align-items: center;
+        /* MOBILE OVERRIDES */
+        @media (max-width: 900px) {
+            .layout-grid { display: flex; flex-direction: column; }
+            aside.right-panel { display: none; }
+            .sys-status span { display: none; } /* Скрываем текст в хедере */
+            #mute-btn { display: flex; }
+            .ticker { display: none; } /* Тикер мешает на телефоне */
         }
-        .sigma-photo {
-            width: 500px; border: 10px solid #fff;
-            filter: grayscale(100%) contrast(120%);
-            animation: pump 0.46s infinite alternate;
-        }
-        .sigma-title { font-size: 100px; color: #fff; font-weight: bold; margin-top: 20px; text-transform: uppercase; line-height: 0.8; }
-        .sigma-sub { font-size: 40px; color: var(--alert-red); letter-spacing: 15px; margin-top: 10px; }
     </style>
 </head>
 <body>
-
-    <audio id="bg-music" loop src="audio/placing_the_blame_intro.mp3"></audio>
-    <audio id="drop-music" src="audio/are_you_man_enough_drop.mp3"></audio>
     
     <header>
-        <div class="logo">
+        <div class="logo-area">
             <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="logo-img">
             OMEGA // CORE
         </div>
-        <div class="header-right">
-            <div class="defcon">DEFCON: 2</div>
-            <div>SERVER: LANGLEY_DC_01</div>
-            <div class="text-alert">● LIVE</div>
+        <div class="sys-status">
+            <span class="text-alert">● SYSTEM LIVE</span>
+            <span>SERVER: DC_NODE_04</span>
+            <button id="mute-btn" onclick="toggleMute()" title="Toggle Sound">🔊</button>
         </div>
     </header>
 
-    <div class="layout">
-        <aside class="left-panel" id="nav-panel">
-            <div class="nav-category">COMMAND CENTER</div>
-            <a href="modules/dashboard.html" target="screen" class="nav-btn active" onclick="select(this)">DASHBOARD</a>
-            <a href="modules/map.html" target="screen" class="nav-btn" onclick="select(this)">GEO-TACTICAL GRID</a>
-            <a href="modules/terminal.html" target="screen" class="nav-btn" onclick="select(this)">ROOT TERMINAL</a>
+    <div class="layout-grid">
+        
+        <aside class="left-panel" id="sidebar">
+            <div class="nav-header">COMMAND MODULES</div>
+            <div class="nav-item active" onclick="loadFrame('modules/dashboard.html', this)">DASHBOARD</div>
+            <div class="nav-item" onclick="loadFrame('modules/map.html', this)">GEO-TACTICAL MAP</div>
+            <div class="nav-item" onclick="loadFrame('modules/terminal.html', this)">ROOT TERMINAL</div>
             
-            <div class="nav-category">DATABASE (CLASSIFIED)</div>
-            <a href="modules/targets.html" target="screen" class="nav-btn" onclick="select(this)">TARGET PROFILES</a>
-            <a href="modules/clones.html" target="screen" class="nav-btn" onclick="select(this)">CLONE MANAGER</a>
-            <a href="modules/flight_logs.html" target="screen" class="nav-btn" onclick="select(this)">FLIGHT_LOGS.XLS</a>
-            <a href="modules/timeline.html" target="screen" class="nav-btn" onclick="select(this)">HISTORY_EDIT.EXE</a>
+            <div class="nav-header">DATABASE</div>
+            <div class="nav-item" onclick="loadFrame('modules/targets.html', this)">TARGET PROFILES</div>
+            <div class="nav-item" onclick="loadFrame('modules/clones.html', this)">CLONE MANAGER</div>
+            <div class="nav-item" onclick="loadFrame('modules/finance.html', this)">SHADOW FINANCE</div>
+            <div class="nav-item" onclick="loadFrame('modules/flight_logs.html', this)">FLIGHT LOGS</div>
             
-            <div class="nav-category">SURVEILLANCE</div>
-            <a href="modules/cctv.html" target="screen" class="nav-btn" onclick="select(this)">CCTV FEED (LIVE)</a>
-            <a href="modules/intercepts.html" target="screen" class="nav-btn" onclick="select(this)">AUDIO INTERCEPTS</a>
-            <a href="modules/evidence.html" target="screen" class="nav-btn" onclick="select(this)">PHYSICAL EVIDENCE</a>
-            <a href="modules/finance.html" target="screen" class="nav-btn" onclick="select(this)">SHADOW FINANCE</a>
+            <div class="nav-header">SURVEILLANCE</div>
+            <div class="nav-item" onclick="loadFrame('modules/cctv.html', this)">LIVE CCTV</div>
+            <div class="nav-item" onclick="loadFrame('modules/intercepts.html', this)">INTERCEPTS</div>
+            <div class="nav-item" onclick="loadFrame('modules/evidence.html', this)">EVIDENCE LOCKER</div>
 
             <div style="flex-grow: 1"></div>
-            <div style="border-top: 1px solid #333; padding-top: 15px; margin-top: 10px;">
-                <a href="javascript:void(0)" class="nav-btn" style="color: var(--alert-red); border: 1px solid var(--alert-red); justify-content: center; font-weight: bold;" onclick="triggerSigma()">
-                    ⚠ PROJECT SIGMA
-                </a>
+            <div class="nav-item" style="color: var(--alert-red); border-top: 1px solid #333; margin-top: 20px;" onclick="triggerSigma()">
+                ⚠ PROJECT SIGMA
             </div>
         </aside>
 
         <main onclick="closeMenu()">
-            <iframe src="modules/dashboard.html" name="screen" id="main-frame"></iframe>
+            <iframe src="modules/dashboard.html" id="main-frame"></iframe>
         </main>
 
         <aside class="right-panel">
-            <div class="log-header">ACTIVITY LOG (REAL-TIME)</div>
-            <div id="system-log"></div>
+            <div style="border-bottom: 1px solid #333; padding-bottom: 5px; color: #fff;">SYSTEM LOGS</div>
+            <div id="log-feed">
+                </div>
         </aside>
     </div>
 
     <footer>
-        <div class="news-ticker">
-            <div class="ticker-content" id="ticker-text">
-                LOADING GLOBAL NEWS FEED... // SOURCE: DEEP STATE WIRE //
-            </div>
+        <div class="ticker">
+            <span>BREAKING: ELON MUSK DECLARES HIMSELF 'EMPEROR OF MARS' +++ REPTILIAN STRIKE ENDS IN LONDON +++ BITCOIN REACHES $1M THEN CRASHES TO $0 +++ TIGRANES DETECTED IN SYSTEM +++</span>
         </div>
-        <div class="footer-info">
-            <div id="user-display">USER: UNKNOWN</div>
-            <div>RAM: 128TB</div>
-        </div>
+        <div class="user-badge" id="user-display">USER: TIGRANES</div>
     </footer>
 
-    <div id="sigma-overlay">
-        <img src="assets/img/YOU_SIGMA.jpg" class="sigma-photo" alt="THE BOSS">
-        <div class="sigma-title">IT WAS ME</div>
-        <div class="sigma-sub">ALL ALONG</div>
+    <div id="sigma-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; flex-direction:column; align-items:center; justify-content:center;">
+        <h1 style="font-size: 5vw; color: #fff;">IT WAS ME</h1>
+        <h2 style="font-size: 3vw; color: red;">ALL ALONG</h2>
+        <img src="assets/img/YOU_SIGMA.jpg" style="width: 300px; border: 5px solid #fff; margin-top: 20px;">
     </div>
+
+    <audio id="bg-music" loop src="audio/placing_the_blame_intro.mp3"></audio>
 
     <script src="assets/js/main.js"></script>
     <script>
-        // 1. Инициализация (Алиас и музыка)
-        const userAlias = localStorage.getItem('omega_alias') || "THE ARCHITECT";
-        document.getElementById('user-display').innerText = "USER: " + userAlias;
+        // --- ЛОГИКА ОБОЛОЧКИ ---
+        
+        // 1. Инициализация
+        const user = OmegaSystem.state.user || "TIGRANES";
+        document.getElementById('user-display').innerText = "USER: " + user;
+        addLog("SYSTEM BOOT SEQUENCE COMPLETE");
+        addLog("BIOMETRIC VERIFIED: " + user);
 
+        // Музыка (запуск при первом клике)
         document.body.addEventListener('click', () => {
             const bg = document.getElementById('bg-music');
-            if(bg.paused) { bg.volume = 0.2; bg.play(); }
+            if(bg.paused && !OmegaSystem.state.isMuted) { 
+                bg.volume = 0.2; bg.play(); 
+            }
         }, {once:true});
 
-        addLog("SESSION ESTABLISHED FOR: " + userAlias);
-
-        // 2. Логика мобильного меню
-        function toggleMenu() {
-            const panel = document.getElementById('nav-panel');
-            panel.classList.toggle('mobile-open');
+        // 2. Переключение фреймов (с Fade эффектом)
+        function loadFrame(url, btn) {
+            const frame = document.getElementById('main-frame');
+            
+            // UI
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Анимация
+            frame.classList.add('loading');
             soundClick();
-        }
-        function closeMenu() {
-            // Закрывать меню при клике на мейнфрейм
-            document.getElementById('nav-panel').classList.remove('mobile-open');
-        }
+            
+            setTimeout(() => {
+                frame.src = url;
+                // Ждем загрузки
+                frame.onload = () => {
+                    frame.classList.remove('loading');
+                    addLog("MODULE LOADED: " + btn.innerText);
+                };
+            }, 300); // Задержка для эффекта
 
-        // 3. Переключение вкладок
-        function select(el) {
-            // Убираем активный класс у всех
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            // Добавляем нажатой
-            el.classList.add('active');
-            // Звук
-            soundClick();
-            // Лог
-            addLog("ACCESSING MODULE: " + el.innerText);
-            // Закрыть меню на мобилках
             closeMenu();
         }
 
-        // 4. Логгер
-        function addLog(text) {
-            const logContainer = document.getElementById('system-log');
-            const time = new Date().toLocaleTimeString('en-US', {hour12:false});
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.innerHTML = `<span class="log-time">[${time}]</span> ${text}`;
+        // 3. Mute Button
+        function toggleMute() {
+            const isMuted = toggleGlobalMute(); // Функция из main.js
+            const btn = document.getElementById('mute-btn');
+            const bg = document.getElementById('bg-music');
             
-            logContainer.appendChild(entry);
-            logContainer.scrollTop = logContainer.scrollHeight;
-
-            if (logContainer.children.length > 20) {
-                logContainer.removeChild(logContainer.children[0]);
+            if(isMuted) {
+                btn.innerText = "🔇";
+                btn.classList.add('active');
+                bg.pause();
+            } else {
+                btn.innerText = "🔊";
+                btn.classList.remove('active');
+                bg.play();
             }
         }
 
-        // 5. Рандомные события и Глитчи
-        setInterval(() => {
-            const events = [
-                "Encrypted packet received from Antarctica", 
-                "Ping from Sector 7 (Hollow Earth)", 
-                "Botnet 404 update complete", 
-                "Tracing connection...", 
-                "Financial transaction verified: $50B moved", 
-                "Asset 'Trump' uploaded new Truth Social post",
-                "Satellite realignment complete",
-                "Suppressing unauthorized leak in Reddit",
-                "Zuckerberg thermal regulation: NORMAL",
-                "Scanning global frequencies..."
-            ];
-            const rnd = events[Math.floor(Math.random() * events.length)];
-            addLog(rnd);
-
-            // Рандомный глитч с шансом 30%
-            if(Math.random() > 0.7) triggerGlitch();
-
-        }, 3000);
-
-        function triggerGlitch() {
-            document.body.classList.add('glitch-active');
-            soundDeny(); // Короткий звук сбоя
-            setTimeout(() => {
-                document.body.classList.remove('glitch-active');
-            }, 200 + Math.random() * 200);
+        // 4. Логгер
+        function addLog(msg) {
+            const feed = document.getElementById('log-feed');
+            const time = new Date().toLocaleTimeString('en-US', {hour12:false});
+            const div = document.createElement('div');
+            div.className = 'log-line fade-in';
+            div.innerHTML = `<span class="log-ts">[${time}]</span> ${msg}`;
+            feed.appendChild(div);
+            feed.scrollTop = feed.scrollHeight;
         }
 
-        // 6. Бегущая строка (Новости)
-        const news = [
-            "ELON MUSK BUYS GREENLAND FOR 2 DOGECOINS",
-            "REPTILIAN UNION DEMANDS HIGHER HEAT LAMP BUDGET",
-            "NASA ADMITS THE MOON IS MADE OF CHEESE (AND HOLLOW)",
-            "TRUMP DECLARES WAR ON 'CLOUDS' FOR BLOCKING THE SUN",
-            "5G TOWERS NOW BROADCASTING DIRECTLY INTO DREAMS",
-            "MARK ZUCKERBERG SHEDS SKIN LIVE ON AIR - STOCK PLUMMETS",
-            "SIMULATION SERVER RESTART SCHEDULED FOR TUESDAY"
-        ];
-        
-        const ticker = document.getElementById('ticker-text');
-        ticker.innerText = news.join(" +++ ") + " +++ " + news.join(" +++ "); // Дублируем для длины
+        // 5. Рандомные события
+        setInterval(() => {
+            const logs = [
+                "Ping from Antarctica Base [OK]",
+                "Intercepted Telegram packet: 'PizzaGate 2.0'",
+                "Neuralink update uploading... 45%",
+                "Satellite connection stable",
+                "Suppressing Reddit leak...",
+                "Financial transfer: $5B -> Cayman Islands"
+            ];
+            if(Math.random() > 0.6) addLog(logs[Math.floor(Math.random() * logs.length)]);
+        }, 4000);
 
-        // 7. ФИНАЛ (PROJECT SIGMA)
+        // 6. Mobile Menu
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
+        function closeMenu() {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+        }
+
+        // 7. Sigma Final
         function triggerSigma() {
-            const bg = document.getElementById('bg-music');
-            const drop = document.getElementById('drop-music');
-            const overlay = document.getElementById('sigma-overlay');
-
-            bg.pause();
-            drop.currentTime = 0;
-            drop.play();
-            drop.volume = 1.0;
-
-            overlay.style.display = 'flex';
-            addLog("!!! CRITICAL: PROJECT SIGMA ACTIVATED !!!");
-
-            // Стробоскоп
-            const colors = ['#000', '#500', '#000', '#200', '#000'];
-            let i = 0;
-            setInterval(() => {
-                overlay.style.backgroundColor = colors[i];
-                i = (i + 1) % colors.length;
-            }, 235);
+            document.getElementById('sigma-overlay').style.display = 'flex';
+            document.getElementById('bg-music').pause();
+            addLog("!!! PROJECT SIGMA ACTIVATED !!!");
         }
     </script>
 </body>

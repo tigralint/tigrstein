@@ -8,9 +8,10 @@
         .clone-vat {
             border: 1px solid #333; background: rgba(0, 20, 20, 0.3); padding: 20px;
             display: flex; gap: 20px; align-items: center; margin-bottom: 20px;
-            transition: 0.3s;
+            transition: 0.3s; position: relative;
         }
         .clone-vat.critical { border-color: red; box-shadow: 0 0 20px rgba(255,0,0,0.2); }
+        .clone-vat.dead { filter: grayscale(100%); opacity: 0.5; pointer-events: none; }
 
         .vat-window {
             width: 120px; height: 150px; border: 2px solid #00ffff;
@@ -27,6 +28,15 @@
         }
         @keyframes rise { from { background-position: 0 0; } to { background-position: 0 -100px; } }
 
+        /* DEAD OVERLAY */
+        .dead-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); color: red;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: bold;
+            display: none; z-index: 10;
+        }
+
         .controls { flex-grow: 1; }
         
         /* Прогресс-бары */
@@ -34,63 +44,64 @@
         .progress-bg { width: 100%; background: #111; height: 8px; border: 1px solid #333; margin-top: 2px; }
         .progress-fill { height: 100%; background: var(--term-green); width: 50%; transition: width 0.5s; }
         .progress-fill.low { background: red; }
-
-        .status-led {
-            display: inline-block; width: 8px; height: 8px; background: #00ff41;
-            border-radius: 50%; box-shadow: 0 0 5px #00ff41; margin-right: 5px;
-        }
-        .status-led.blink { animation: blink 0.5s infinite; background: red; box-shadow: 0 0 5px red; }
     </style>
 </head>
 <body>
-    <h2>BIOLOGICAL ASSET MANAGER (CLONES)</h2>
-    <p style="color: #666; font-size: 12px; margin-bottom: 20px;">MAINTENANCE REQUIRED. DO NOT LET BATTERY REACH 0%.</p>
+    <h2>BIOLOGICAL ASSET MANAGER</h2>
+    <p style="color: #666; font-size: 12px; margin-bottom: 20px;">
+        WARNING: ASSET DECAY IS PERSISTENT.
+    </p>
     
     <div class="clone-vat" id="vat-zuck">
+        <div class="dead-overlay" id="dead-zuck">
+            ASSET TERMINATED
+            <button class="btn" style="pointer-events: auto; margin-top: 10px; border-color: red; color: red;" onclick="respawn('zuck')">PRINT NEW CLONE ($10k)</button>
+        </div>
+
         <div class="vat-window">
             <div class="bubbles"></div>
             <img src="../assets/img/zuck_robot.jpg" id="img-zuck" alt="Zuck">
         </div>
         <div class="controls">
             <h3>MARK ZUCKERBERG (v.4.2)</h3>
-            
             <div class="stat-row">
-                <span>HUMANITY EMULATION</span>
-                <div class="progress-bg"><div class="progress-fill" id="bar-zuck-hum" style="width: 80%;"></div></div>
+                <span>HUMANITY</span> <span id="val-zuck-hum">80%</span>
+                <div class="progress-bg"><div class="progress-fill" id="bar-zuck-hum"></div></div>
             </div>
             <div class="stat-row">
-                <span>COOLANT LEVEL (BBQ SAUCE)</span>
-                <div class="progress-bg"><div class="progress-fill" id="bar-zuck-cool" style="width: 60%;"></div></div>
+                <span>COOLANT (BBQ SAUCE)</span> <span id="val-zuck-cool">60%</span>
+                <div class="progress-bg"><div class="progress-fill" id="bar-zuck-cool"></div></div>
             </div>
-            
-            <div style="margin-top: 15px; display: flex; gap: 10px;">
-                <button class="btn" style="padding: 5px 10px; font-size: 10px;" onclick="feedZuck()">APPLY SWEET BABY RAYS</button>
-                <button class="btn" style="padding: 5px 10px; font-size: 10px; border-color: red; color: red;" onclick="rebootZuck()">FORCE REBOOT</button>
+            <div style="margin-top: 15px; display: flex; gap: 10px; align-items: center;">
+                <button class="btn" style="padding: 5px 10px; font-size: 10px;" onclick="feed('zuck')">APPLY SAUCE</button>
+                <button class="btn" id="btn-auto-zuck" style="padding: 5px 10px; font-size: 10px; display:none;" onclick="buyAuto('zuck')">BUY AUTO-FEEDER ($50k)</button>
             </div>
             <p id="log-zuck" style="font-size: 10px; color: cyan; margin-top: 5px;">> STATUS: NORMAL</p>
         </div>
     </div>
 
     <div class="clone-vat" id="vat-biden">
+        <div class="dead-overlay" id="dead-biden">
+            ASSET LOST
+            <button class="btn" style="pointer-events: auto; margin-top: 10px; border-color: red; color: red;" onclick="respawn('biden')">RECOVER ASSET ($5k)</button>
+        </div>
+
         <div class="vat-window">
             <div class="bubbles"></div>
             <img src="../assets/img/epstein_mugshot.jpg" id="img-biden" alt="Biden" style="filter: grayscale(100%) blur(2px);"> 
         </div>
         <div class="controls">
             <h3>JOE BIDEN (v.1.0)</h3>
-            
             <div class="stat-row">
-                <span>GPS CALIBRATION</span>
-                <div class="progress-bg"><div class="progress-fill" id="bar-biden-gps" style="width: 40%;"></div></div>
+                <span>GPS SIGNAL</span> <span id="val-biden-hum">40%</span>
+                <div class="progress-bg"><div class="progress-fill" id="bar-biden-hum"></div></div>
             </div>
             <div class="stat-row">
-                <span>ICE CREAM RESERVES</span>
-                <div class="progress-bg"><div class="progress-fill" id="bar-biden-ice" style="width: 20%;"></div></div>
+                <span>ICE CREAM</span> <span id="val-biden-cool">20%</span>
+                <div class="progress-bg"><div class="progress-fill" id="bar-biden-cool"></div></div>
             </div>
-            
-            <div style="margin-top: 15px;">
-                <button class="btn" style="padding: 5px 10px; font-size: 10px;" onclick="feedBiden()">DISPENSE CHOCOLATE CHIP</button>
-                <button class="btn" style="padding: 5px 10px; font-size: 10px;" onclick="resetGPS()">RESET WAYPOINT (STAGE)</button>
+            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                <button class="btn" style="padding: 5px 10px; font-size: 10px;" onclick="feed('biden')">DISPENSE CONE</button>
             </div>
             <p id="log-biden" style="font-size: 10px; color: orange; margin-top: 5px;">> STATUS: WANDERING...</p>
         </div>
@@ -98,90 +109,131 @@
 
     <script src="../assets/js/main.js"></script>
     <script>
-        // Данные клонов
-        const clones = {
-            zuck: { hum: 80, cool: 60, interval: null },
-            biden: { gps: 40, ice: 20, interval: null }
+        const System = window.parent.OmegaSystem || OmegaSystem;
+
+        // Дефолтное состояние клонов
+        const DEFAULT_CLONES = {
+            zuck: { hum: 80, cool: 60, dead: false, auto: false },
+            biden: { hum: 50, cool: 40, dead: false, auto: false }
         };
 
-        // ЗАПУСК ЦИКЛА
-        setInterval(() => {
-            decay('zuck', 'hum', 2);
-            decay('zuck', 'cool', 1);
-            decay('biden', 'gps', 3);
-            decay('biden', 'ice', 1);
-            updateUI();
-        }, 1000);
+        let clones = JSON.parse(localStorage.getItem('omega_clones')) || DEFAULT_CLONES;
 
-        function decay(name, stat, amount) {
-            clones[name][stat] -= amount;
-            if (clones[name][stat] < 0) clones[name][stat] = 0;
+        // INIT
+        function init() {
+            // Проверяем баланс для кнопки авто
+            if(System.state.balance >= 50000 && !clones.zuck.auto) {
+                document.getElementById('btn-auto-zuck').style.display = 'block';
+            }
+            // Loop
+            setInterval(tick, 1000);
+            updateUI();
+        }
+
+        // TICK
+        function tick() {
+            // Decay Logic
+            for(let key in clones) {
+                if(clones[key].dead) continue;
+                if(clones[key].auto) {
+                    // Если авто, держим на 100%
+                    clones[key].hum = 100;
+                    clones[key].cool = 100;
+                } else {
+                    // Гниение
+                    clones[key].hum -= (Math.random() * 2);
+                    clones[key].cool -= (Math.random() * 1.5);
+                    
+                    // Смерть
+                    if(clones[key].hum <= 0 || clones[key].cool <= 0) {
+                        clones[key].hum = 0; clones[key].cool = 0;
+                        clones[key].dead = true;
+                        soundDeny(); // Звук смерти
+                    }
+                }
+            }
+            save();
+            updateUI();
+        }
+
+        // ACTIONS
+        function feed(key) {
+            if(clones[key].dead) return;
+            clones[key].hum = Math.min(100, clones[key].hum + 15);
+            clones[key].cool = Math.min(100, clones[key].cool + 20);
+            soundClick();
+            updateUI();
+        }
+
+        function buyAuto(key) {
+            if(System.state.balance >= 50000) {
+                System.update('balance', System.state.balance - 50000);
+                clones[key].auto = true;
+                document.getElementById('btn-auto-zuck').innerText = "AUTO-FEEDER ACTIVE";
+                document.getElementById('btn-auto-zuck').disabled = true;
+                soundClick();
+            } else {
+                soundDeny();
+            }
+        }
+
+        function respawn(key) {
+            const cost = key === 'zuck' ? 10000 : 5000;
+            if(System.state.balance >= cost) {
+                System.update('balance', System.state.balance - cost);
+                clones[key] = { hum: 100, cool: 100, dead: false, auto: clones[key].auto };
+                save();
+                updateUI();
+                soundClick();
+            } else {
+                soundDeny();
+                alert("INSUFFICIENT FUNDS. PLEASE PRINT MORE MONEY.");
+            }
+        }
+
+        function save() {
+            localStorage.setItem('omega_clones', JSON.stringify(clones));
         }
 
         function updateUI() {
-            // Zuck Logic
-            setBar('bar-zuck-hum', clones.zuck.hum);
-            setBar('bar-zuck-cool', clones.zuck.cool);
-            
-            const zuckLog = document.getElementById('log-zuck');
-            const zuckImg = document.getElementById('img-zuck');
-            const zuckVat = document.getElementById('vat-zuck');
+            // Helper
+            const updateOne = (key) => {
+                const data = clones[key];
+                const vat = document.getElementById(`vat-${key}`);
+                const overlay = document.getElementById(`dead-${key}`);
+                const log = document.getElementById(`log-${key}`);
 
-            if(clones.zuck.hum < 20 || clones.zuck.cool < 10) {
-                zuckLog.innerText = "> WARNING: REPTILIAN FORM EXPOSED";
-                zuckLog.style.color = "red";
-                zuckImg.style.filter = "invert(1) hue-rotate(90deg)"; // Страшный вид
-                zuckVat.classList.add('critical');
-            } else {
-                zuckLog.innerText = "> STATUS: BLENDING IN WITH HUMANS...";
-                zuckLog.style.color = "cyan";
-                zuckImg.style.filter = "none";
-                zuckVat.classList.remove('critical');
-            }
+                // Bars
+                document.getElementById(`bar-${key}-hum`).style.width = data.hum + "%";
+                document.getElementById(`val-${key}-hum`).innerText = Math.floor(data.hum) + "%";
+                document.getElementById(`bar-${key}-cool`).style.width = data.cool + "%";
+                document.getElementById(`val-${key}-cool`).innerText = Math.floor(data.cool) + "%";
 
-            // Biden Logic
-            setBar('bar-biden-gps', clones.biden.gps);
-            setBar('bar-biden-ice', clones.biden.ice);
+                // Dead check
+                if(data.dead) {
+                    overlay.style.display = 'flex';
+                    log.innerText = "SIGNAL LOST";
+                    vat.classList.remove('critical');
+                } else {
+                    overlay.style.display = 'none';
+                    // Critical check
+                    if(data.hum < 20) {
+                        vat.classList.add('critical');
+                        log.innerText = "WARNING: CRITICAL INSTABILITY";
+                        log.style.color = "red";
+                    } else {
+                        vat.classList.remove('critical');
+                        log.style.color = key === 'zuck' ? "cyan" : "orange";
+                        log.innerText = key === 'zuck' ? (data.auto ? "> AUTO-MAINTENANCE MODE" : "> STATUS: NORMAL") : "> STATUS: CONFUSED";
+                    }
+                }
+            };
 
-            const bidenLog = document.getElementById('log-biden');
-            if(clones.biden.gps < 10) {
-                bidenLog.innerText = "> ALERT: SUBJECT LOST IN PARKING LOT";
-                bidenLog.style.color = "red";
-            } else {
-                bidenLog.innerText = "> STATUS: WAVING AT INVISIBLE PEOPLE";
-                bidenLog.style.color = "orange";
-            }
+            updateOne('zuck');
+            updateOne('biden');
         }
 
-        function setBar(id, val) {
-            const el = document.getElementById(id);
-            el.style.width = val + "%";
-            if(val < 30) el.classList.add('low');
-            else el.classList.remove('low');
-        }
-
-        // --- ДЕЙСТВИЯ ---
-        function feedZuck() {
-            clones.zuck.cool = 100;
-            clones.zuck.hum += 10;
-            soundClick();
-            document.getElementById('log-zuck').innerText = "> LUBRICATION APPLIED.";
-        }
-        function rebootZuck() {
-            clones.zuck.hum = 100;
-            soundDeny(); // Звук перезагрузки
-        }
-
-        function feedBiden() {
-            clones.biden.ice = 100;
-            soundClick();
-        }
-        function resetGPS() {
-            clones.biden.gps = 100;
-            soundClick();
-        }
-
-        updateUI(); // Первый рендер
+        init();
     </script>
 </body>
 </html>

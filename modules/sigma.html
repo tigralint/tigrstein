@@ -5,90 +5,119 @@
     <title>PROJECT SIGMA</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 95vh; overflow: hidden; }
+        body { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; overflow: hidden; background: #000;
+            cursor: none;
+        }
         
-        /* Экран предупреждения */
-        #warning-screen { text-align: center; z-index: 10; }
+        /* Текстовые слайды */
+        .slide {
+            position: absolute; width: 100%; text-align: center;
+            opacity: 0; transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        .slide.active { opacity: 1; }
+
+        h1 { font-size: 4rem; color: #fff; text-shadow: 0 0 20px #fff; border: none; }
+        h2 { font-size: 8rem; color: var(--alert-red); text-transform: uppercase; border: none; }
         
-        /* Контент финала */
-        #content { display: none; flex-direction: column; align-items: center; width: 100%; }
-        
-        .sigma-photo {
-            width: 400px; height: auto;
-            border: 10px solid #fff;
-            filter: grayscale(100%) contrast(120%);
-            box-shadow: 0 0 50px rgba(255,255,255,0.5);
-            /* Анимация бита (качание) */
-            animation: beat 0.46s infinite alternate ease-in-out; 
+        .big-name {
+            font-size: 10rem; font-family: 'Oswald', sans-serif;
+            background: linear-gradient(to bottom, #fff, #888);
+            -webkit-background-clip: text; color: transparent;
+            animation: shake 0.2s infinite;
         }
 
-        @keyframes beat {
-            from { transform: scale(1) rotate(0deg); }
-            to { transform: scale(1.05) rotate(1deg); }
+        /* Фото финал */
+        .sigma-img {
+            width: 400px; height: auto; border: 10px solid #fff;
+            filter: grayscale(100%) contrast(1.5);
+            animation: pump 0.46s infinite alternate; /* Под бит */
+            box-shadow: 0 0 100px rgba(255, 255, 255, 0.5);
+            display: none;
+        }
+        .sigma-img.show { display: block; }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
-        .big-text {
-            font-family: 'Oswald', sans-serif;
-            font-size: 5rem; color: #fff;
-            text-transform: uppercase;
-            text-shadow: 5px 5px 0px var(--alert-red);
-            margin-top: 20px;
-            line-height: 1;
-            text-align: center;
-        }
-        
-        .sub-text {
-            font-size: 2rem; color: var(--alert-red); letter-spacing: 10px; font-weight: bold;
-            animation: blink 0.2s infinite;
-        }
+        /* Кнопка запуска */
+        #start-btn { z-index: 100; pointer-events: auto; font-size: 2rem; padding: 20px 40px; }
     </style>
 </head>
 <body>
 
-    <div id="warning-screen">
-        <div style="font-size: 5rem; margin-bottom: 20px;">⚠</div>
-        <h1 style="color: var(--alert-red); font-size: 3rem; border: none;">CLASSIFIED FILE</h1>
-        <p style="font-size: 1.2rem; margin-bottom: 30px;">
-            THIS DOCUMENT CONTAINS THE IDENTITY OF THE TRUE RULER OF EARTH.<br>
-            VIEWING IS RESTRICTED TO CLEARANCE LEVEL 10.
-        </p>
-        <button class="btn" style="font-size: 1.5rem; padding: 20px 40px;" onclick="reveal()">
-            DECRYPT & OPEN FILE
-        </button>
+    <button id="start-btn" class="btn" onclick="startSequence()">INITIATE REVEAL</button>
+
+    <div class="slide" id="s1"><h1>WHO IS THE ARCHITECT?</h1></div>
+    <div class="slide" id="s2"><h1>IS IT THE GOVERNMENT?</h1></div>
+    <div class="slide" id="s3"><h1 style="color: red">NO.</h1></div>
+    <div class="slide" id="s4"><h1>IT WAS...</h1></div>
+    
+    <div class="slide" id="s-final">
+        <img src="../assets/img/YOU_SIGMA.jpg" class="sigma-img" id="final-img">
+        <div class="big-name" id="user-name">YOU</div>
     </div>
 
-    <div id="content">
-        <img src="../assets/img/YOU_SIGMA.jpg" class="sigma-photo" id="photo">
-        <div class="big-text">IT WAS ME</div>
-        <div class="sub-text">ALL ALONG</div>
-    </div>
-
-    <audio id="drop-music" src="../audio/are_you_man_enough_drop.mp3"></audio>
+    <audio id="music" src="../audio/are_you_man_enough_drop.mp3"></audio>
 
     <script>
-        function reveal() {
-            // Скрываем кнопку
-            document.getElementById('warning-screen').style.display = 'none';
-            
-            // Показываем контент
-            document.getElementById('content').style.display = 'flex';
+        // Читаем имя из памяти
+        const System = window.parent.OmegaSystem || { state: { user: "TIGRANES" }}; // Fallback
+        const savedUser = localStorage.getItem('omega_state') ? JSON.parse(localStorage.getItem('omega_state')).user : "TIGRANES";
+        document.getElementById('user-name').innerText = savedUser;
 
-            // Включаем музыку
-            const audio = document.getElementById('drop-music');
+        function startSequence() {
+            // Убираем кнопку
+            document.getElementById('start-btn').style.display = 'none';
+            
+            const audio = document.getElementById('music');
             audio.currentTime = 0;
             audio.volume = 1.0;
             audio.play();
 
-            // Эффект стробоскопа на фоне (меняет цвета под бит)
-            let colors = ['#000', '#500', '#000', '#100', '#000', '#200'];
-            let i = 0;
+            // Тайминг анимации (подстроен под ритм, если это стандартный фонк-трек)
+            // Допустим, дроп через 6 секунд. Распределяем слайды.
             
+            show('s1'); // Who is...
+            
+            setTimeout(() => show('s2'), 2000); // Is it gov...
+            setTimeout(() => show('s3'), 4000); // NO.
+            setTimeout(() => show('s4'), 5500); // It was...
+            
+            setTimeout(() => {
+                show('s-final'); // TIGRANES + PHOTO
+                document.getElementById('final-img').classList.add('show');
+                startStrobe();
+            }, 7000); // ДРОП!
+        }
+
+        function show(id) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function startStrobe() {
+            // Эпилепсия warning
+            const colors = ['#000', '#fff', '#500', '#000', '#200'];
+            let i = 0;
             setInterval(() => {
                 document.body.style.backgroundColor = colors[i];
                 i = (i + 1) % colors.length;
-            }, 230); // Скорость (мс) под BPM трека "Are You Man Enough"
+            }, 100);
         }
     </script>
-    <script src="../assets/js/main.js"></script>
 </body>
 </html>

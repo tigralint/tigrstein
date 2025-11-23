@@ -1,49 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../assets/css/style.css"> </head>
+    <meta charset="UTF-8">
+    <title>DASHBOARD</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        /* DASHBOARD SPECIFIC */
+        .status-header {
+            text-align: center; margin-bottom: 30px;
+            padding: 20px; border: 1px solid #333; background: rgba(0,0,0,0.5);
+        }
+        
+        .panic-meter-container {
+            width: 100%; height: 20px; background: #111; border: 1px solid #333;
+            margin: 10px 0; position: relative; overflow: hidden;
+        }
+        .panic-bar {
+            height: 100%; background: linear-gradient(90deg, var(--term-green) 0%, yellow 60%, red 100%);
+            width: 15%; transition: width 0.5s ease-out;
+        }
+        
+        /* LIVE CHARTS CSS */
+        .chart-box {
+            height: 100px; display: flex; align-items: flex-end; gap: 5px;
+            padding-top: 10px; border-bottom: 1px solid #333;
+        }
+        .bar {
+            flex-grow: 1; background: var(--term-green); opacity: 0.5;
+            transition: height 0.5s;
+        }
+        .bar:nth-child(even) { opacity: 0.8; }
+        
+        .notification-list li {
+            border-bottom: 1px solid #222; padding: 5px 0; font-size: 0.85rem;
+        }
+
+        /* PROTOCOL BUTTON ANIMATION */
+        @keyframes pulse-red { 0% {box-shadow: 0 0 0 red;} 50% {box-shadow: 0 0 20px red;} 100% {box-shadow: 0 0 0 red;} }
+        .btn-danger {
+            border-color: var(--alert-red); color: var(--alert-red);
+            animation: pulse-red 2s infinite;
+        }
+        .btn-danger:hover { background: var(--alert-red); color: #000; }
+
+    </style>
+</head>
 <body>
+
     <div class="crt-flicker">
-        <div style="text-align: center; margin-top: 40px; border-bottom: 2px solid #333; padding-bottom: 20px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" width="120" style="filter: grayscale(100%) opacity(0.5);">
-            <h1 style="font-size: 3em; margin-top: 10px;">WELCOME, OVERSEER</h1>
-            <p>CURRENT WORLD STATUS: <span class="text-alert" style="font-size: 1.2em">CHAOS (OPTIMAL)</span></p>
+        <div class="status-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" width="60" style="filter: grayscale(100%) opacity(0.5); margin-bottom: 10px;">
+            <h2>GLOBAL SIMULATION STATUS</h2>
+            
+            <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 10px;">
+                <span>STABILITY: <span id="stability-text">STABLE</span></span>
+                <span>PANIC LEVEL: <span id="panic-val">15%</span></span>
+            </div>
+            
+            <div class="panic-meter-container">
+                <div class="panic-bar" id="panic-bar"></div>
+            </div>
         </div>
 
-        <div class="grid-2" style="margin-top: 30px;">
+        <div class="grid-2">
             <div class="card">
-                <h3>PRIORITY NOTIFICATIONS (3)</h3>
-                <ul style="list-style: none; padding: 0; line-height: 2;">
-                    <li>> <strong style="color:#fff">TRUMP:</strong> Requesting permission to post meme [PENDING]</li>
-                    <li>> <strong style="color:#fff">MARKET CRASH:</strong> Scheduled for next Tuesday [READY]</li>
-                    <li>> <strong style="color:#fff">EPSTEIN:</strong> Complaining about AC in bunker [IGNORED]</li>
-                    <li>> <strong style="color:#fff">ELON MUSK:</strong> Neuralink update 5.0 uploaded [DONE]</li>
+                <h3>PRIORITY ALERTS</h3>
+                <ul class="notification-list" style="list-style: none; padding: 0;">
+                    <li>> <strong style="color:#fff">TRUMP:</strong> Requires validation code for Truth Social.</li>
+                    <li>> <strong style="color:#fff">ECONOMY:</strong> Inflation artificial boost active.</li>
+                    <li>> <strong style="color:#fff">CLONES:</strong> Zuckerberg overheating (See Clone Mgr).</li>
+                    <li>> <strong style="color:#fff">ELON:</strong> Mars rocket painted wrong color.</li>
                 </ul>
             </div>
             
             <div class="card">
-                <h3>SYSTEM HEALTH MONITOR</h3>
-                <div style="margin-bottom: 10px;">
-                    <div>MIND CONTROL TOWERS (5G)</div>
-                    <div style="width: 100%; background: #111; height: 10px;"><div style="width: 100%; background: var(--term-green); height: 100%;"></div></div>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <div>MEDIA MANIPULATION</div>
-                    <div style="width: 100%; background: #111; height: 10px;"><div style="width: 98%; background: var(--term-green); height: 100%;"></div></div>
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <div>SIMULATION STABILITY</div>
-                    <div style="width: 100%; background: #111; height: 10px;"><div style="width: 45%; background: orange; height: 100%;"></div></div>
-                    <div style="font-size: 10px; color: orange; text-align: right;">WARNING: GLITCHES DETECTED</div>
+                <h3>MANIPULATION INDEX</h3>
+                <div class="chart-box" id="chart-1">
+                    </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #666; margin-top: 5px;">
+                    <span>MEDIA CONTROL</span>
+                    <span>5G SATURATION</span>
+                    <span>CHEMTRAILS</span>
                 </div>
             </div>
         </div>
 
         <div class="card" style="text-align: center; border-color: var(--alert-red);">
-            <h3>⚠ GLOBAL ALERT ⚠</h3>
-            <p>Civilian population is beginning to suspect "The Matrix". Initiate Protocol: "TIKTOK DISTRACTION".</p>
-            <button class="btn" style="color: var(--alert-red); border-color: var(--alert-red);">EXECUTE PROTOCOL</button>
+            <h3 style="color: var(--alert-red)">⚠ EMERGENCY PROTOCOL ⚠</h3>
+            <p>If population awareness exceeds 80%, initiate "TIKTOK DISTRACTION".</p>
+            <button class="btn btn-danger" onclick="executeProtocol()">EXECUTE PROTOCOL</button>
         </div>
     </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+        const System = window.parent.OmegaSystem || OmegaSystem;
+
+        // 1. INIT
+        function init() {
+            createChart();
+            updateUI();
+            
+            // Обновляем графики каждые 2 сек
+            setInterval(updateChart, 2000);
+            
+            // Слушаем обновления от других модулей (если бы использовали EventBus, но тут polling проще)
+            setInterval(updateUI, 1000);
+        }
+
+        // 2. LOGIC
+        function updateUI() {
+            const panic = System.state.panicLevel || 15;
+            document.getElementById('panic-val').innerText = panic + "%";
+            document.getElementById('panic-bar').style.width = panic + "%";
+            
+            const stabText = document.getElementById('stability-text');
+            if(panic < 30) { stabText.innerText = "OPTIMAL"; stabText.style.color = "var(--term-green)"; }
+            else if(panic < 70) { stabText.innerText = "UNSTABLE"; stabText.style.color = "orange"; }
+            else { stabText.innerText = "CRITICAL"; stabText.style.color = "red"; }
+        }
+
+        function executeProtocol() {
+            soundDeny(); // Звук сирены
+            
+            const btn = document.querySelector('.btn-danger');
+            const originalText = btn.innerText;
+            
+            btn.innerText = "EXECUTING...";
+            btn.disabled = true;
+            
+            // Эффект на весь экран (через родителя, если можно)
+            if(window.parent.document) {
+                const overlay = window.parent.document.createElement('div');
+                overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:red; opacity:0.2; z-index:999; pointer-events:none; animation: blink 0.5s infinite;";
+                window.parent.document.body.appendChild(overlay);
+                setTimeout(() => overlay.remove(), 2000);
+            }
+
+            // Логика
+            setTimeout(() => {
+                let panic = System.state.panicLevel;
+                panic = Math.max(0, panic - 20); // Снижаем панику
+                System.update('panicLevel', panic);
+                
+                btn.innerText = "SUCCESS. PANIC REDUCED.";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }, 2000);
+        }
+
+        // 3. CHARTS
+        function createChart() {
+            const chart = document.getElementById('chart-1');
+            for(let i=0; i<20; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = Math.random() * 100 + "%";
+                chart.appendChild(bar);
+            }
+        }
+
+        function updateChart() {
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                bar.style.height = Math.random() * 80 + 20 + "%";
+            });
+        }
+
+        init();
+    </script>
 </body>
 </html>

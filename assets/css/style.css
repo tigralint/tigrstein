@@ -9,24 +9,25 @@
     --paper-text: #222;
 }
 
-/* --- ОСНОВНЫЕ НАСТРОЙКИ --- */
+/* --- BASE LAYOUT --- */
 body {
     background-color: var(--bg-color);
     color: var(--term-green);
     font-family: 'Share Tech Mono', monospace;
     margin: 0;
-    padding: 0; /* Убрал отступы для полноэкранного режима */
-    overflow: hidden; /* Скролл только внутри контейнеров */
+    padding: 0;
+    overflow: hidden; /* App-like feel */
     height: 100vh;
     box-sizing: border-box;
+    user-select: none; /* Чтобы не выделяли интерфейс */
 }
 
-/* Скроллбар Webkit */
-::-webkit-scrollbar { width: 8px; }
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: #000; }
-::-webkit-scrollbar-thumb { background: #333; border: 1px solid #00ff41; }
+::-webkit-scrollbar-thumb { background: #333; border: 1px solid var(--term-green); }
 
-/* --- ЭФФЕКТ ЭЛТ-МОНИТОРА (CRT) --- */
+/* --- CRT & GLITCH EFFECTS --- */
 body::before {
     content: " ";
     display: block;
@@ -34,37 +35,31 @@ body::before {
     top: 0; left: 0; width: 100%; height: 100%;
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
                 linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    z-index: 9998;
+    z-index: 99999; /* Поверх всего */
     background-size: 100% 2px, 3px 100%;
     pointer-events: none;
+    opacity: 0.6;
 }
 
-/* Мерцание экрана */
 @keyframes flicker {
-    0% { opacity: 0.97; }
+    0% { opacity: 0.98; }
     5% { opacity: 0.95; }
     10% { opacity: 0.9; }
     15% { opacity: 0.95; }
-    20% { opacity: 0.99; }
-    100% { opacity: 0.95; }
+    100% { opacity: 0.98; }
 }
-.crt-flicker { animation: flicker 0.15s infinite; }
+.crt-flicker { animation: flicker 0.1s infinite; }
 
-/* ГЛОБАЛЬНЫЙ ГЛИТЧ (Включается через JS) */
-.glitch-active body {
-    animation: global-glitch 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-    filter: invert(1);
+/* Класс для плавного появления (Transitions) */
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
 }
-@keyframes global-glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-5px, 5px); }
-    40% { transform: translate(-5px, -5px); }
-    60% { transform: translate(5px, 5px); }
-    80% { transform: translate(5px, -5px); }
-    100% { transform: translate(0); }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- ТИПОГРАФИКА --- */
+/* --- TYPOGRAPHY --- */
 h1, h2, h3 {
     text-transform: uppercase;
     border-bottom: 1px solid #333;
@@ -75,183 +70,104 @@ h1, h2, h3 {
     letter-spacing: 2px;
 }
 
-a { color: inherit; text-decoration: none; transition: 0.3s; }
+a { color: inherit; text-decoration: none; transition: 0.2s; }
 
-/* --- ЭЛЕМЕНТЫ ИНТЕРФЕЙСА --- */
+/* --- UI COMPONENTS --- */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
 
-/* Адаптация сетки для мобильных внутри модулей */
-@media (max-width: 768px) {
-    .grid-2, .grid-3 { grid-template-columns: 1fr; }
-}
-
+/* Карточки */
 .card {
     border: 1px solid #333;
-    background: rgba(0, 20, 0, 0.3);
+    background: rgba(0, 20, 0, 0.2);
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-    transition: 0.3s;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(2px);
 }
 .card:hover {
     border-color: var(--term-green);
     box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+    transform: translateY(-2px);
 }
 
 /* Таблицы */
 table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
-th { text-align: left; border-bottom: 2px solid var(--term-green); color: #fff; padding: 10px; background: rgba(0, 255, 65, 0.1); }
+th { text-align: left; border-bottom: 2px solid var(--term-green); color: #fff; padding: 10px; background: rgba(0, 50, 0, 0.3); }
 td { border-bottom: 1px solid #222; padding: 10px; color: #bbb; }
-tr:hover td { background: var(--term-dim); color: #fff; cursor: crosshair; }
+tr:hover td { background: var(--term-dim); color: #fff; cursor: pointer; }
 
-/* --- СПЕЦЭФФЕКТЫ --- */
+/* --- SPECIAL EFFECTS --- */
 .text-alert { color: var(--alert-red); font-weight: bold; animation: blink 1s infinite; text-shadow: 0 0 5px var(--alert-red); }
-@keyframes blink { 50% { opacity: 0; } }
+@keyframes blink { 50% { opacity: 0.3; } }
 
 .redacted {
     background: #ccc; color: #ccc; padding: 0 5px; cursor: help; user-select: none; font-size: 0.9em;
 }
-.redacted:hover {
-    background: transparent; color: var(--alert-red); font-weight: bold;
-}
+.redacted:hover { background: transparent; color: var(--alert-red); }
 
-/* Стиль "Бумажный документ" */
-.paper-doc {
-    background: var(--paper-bg);
-    color: var(--paper-text);
-    font-family: 'Special Elite', cursive;
-    padding: 30px;
-    margin: 20px auto;
-    border: 1px solid #aaa;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.7);
-    transform: rotate(-1deg);
-    max-width: 100%;
-    position: relative;
-    box-sizing: border-box;
-}
-.paper-doc::before {
-    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    background: url('https://www.transparenttextures.com/patterns/paper.png');
-    opacity: 0.5; pointer-events: none;
-}
-.paper-doc h3 { color: #000; border-bottom: 2px solid #000; text-shadow: none; }
-
-.stamp {
-    border: 4px solid var(--alert-red);
-    color: var(--alert-red);
-    font-weight: bold;
-    font-size: 1.2rem;
-    padding: 10px 20px;
-    text-transform: uppercase;
-    display: inline-block;
-    transform: rotate(-15deg);
-    opacity: 0.8;
-    font-family: 'Share Tech Mono', monospace;
-    position: absolute;
-    top: 20px; right: 20px;
-    background: rgba(255, 50, 50, 0.1);
-    mask-image: url('https://www.transparenttextures.com/patterns/dust.png');
-}
-
-/* Кнопки */
+/* --- BUTTONS --- */
 .btn {
     background: #001100; border: 1px solid var(--term-green); color: var(--term-green);
-    padding: 15px 30px; cursor: pointer; font-family: 'Share Tech Mono', monospace;
-    font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px;
-    transition: 0.3s; display: inline-block; margin-top: 15px;
+    padding: 12px 25px; cursor: pointer; font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem; text-transform: uppercase; letter-spacing: 2px;
+    transition: 0.2s; display: inline-block; margin-top: 10px;
+    position: relative; overflow: hidden;
 }
 .btn:hover {
     background: var(--term-green); color: #000; box-shadow: 0 0 20px var(--term-green);
 }
+.btn:active { transform: scale(0.98); }
 
-/* Анимация для фото СИГМЫ */
-@keyframes pump {
-    0% { transform: scale(1); filter: contrast(100%) grayscale(100%); }
-    50% { transform: scale(1.02); filter: contrast(150%) grayscale(100%); }
-    100% { transform: scale(1); filter: contrast(100%) grayscale(100%); }
-}
-
-/* --- НОВЫЕ СТИЛИ ДЛЯ MAINFRAME (TICKER & MOBILE) --- */
-
-/* Бегущая строка */
+/* --- TICKER ANIMATION (Бегущая строка) --- */
 .news-ticker {
-    background: #001100;
-    border-top: 1px solid var(--term-green);
-    height: 30px;
-    overflow: hidden;
-    white-space: nowrap;
-    position: relative;
-    display: flex;
-    align-items: center;
+    background: #000; border-top: 1px solid #333;
+    height: 30px; overflow: hidden; white-space: nowrap;
+    display: flex; align-items: center; color: var(--term-green);
     font-size: 12px;
-    color: var(--term-green);
 }
-
 .ticker-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: marquee 30s linear infinite;
+    display: inline-block; padding-left: 100%;
+    animation: marquee 20s linear infinite;
 }
+@keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-@keyframes marquee {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-100%, 0); }
-}
+/* --- MOBILE RESPONSIVENESS (Advanced) --- */
+.mobile-menu-btn { display: none; } /* Скрыто на ПК */
 
-/* Бургер-меню (скрыто на ПК) */
-.mobile-menu-btn {
-    display: none;
-    font-size: 24px;
-    background: none;
-    border: 1px solid var(--term-green);
-    color: var(--term-green);
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-/* Адаптив для макета Mainframe */
 @media (max-width: 900px) {
-    /* Меняем Grid на Flex (колонка) */
-    .layout {
-        display: flex !important;
-        flex-direction: column;
-        height: calc(100vh - 90px); /* Высота минус хедер и футер */
-        position: relative;
-    }
-
-    /* Боковые панели скрываем по умолчанию */
-    aside.left-panel {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        z-index: 100;
-        background: #020202;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
-        border-right: none;
-    }
+    body { padding: 0; }
     
-    /* Класс для открытия меню */
-    aside.left-panel.mobile-open {
-        transform: translateX(0);
-    }
-
-    /* Правая панель (логи) уходит вниз или скрывается */
-    aside.right-panel {
-        display: none; /* На мобилке логи не нужны, слишком много мусора */
-    }
-
-    /* Основной контент на всю ширину */
-    main {
-        flex-grow: 1;
-        width: 100%;
-    }
-
-    /* Показываем кнопку меню */
-    .mobile-menu-btn { display: block; }
-
-    /* Убираем лишнее в хедере */
-    .header-right { font-size: 10px; gap: 10px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    
+    /* Хедер */
+    header { padding: 0 10px; height: 50px; }
     .logo { font-size: 16px; }
+    .header-right { display: none; } /* Упрощаем хедер */
+    
+    /* Кнопка меню */
+    .mobile-menu-btn {
+        display: block; background: none; border: 1px solid var(--term-green);
+        color: var(--term-green); padding: 5px 12px; margin-right: 10px; font-size: 18px;
+    }
+
+    /* Сайдбар */
+    aside.left-panel {
+        position: fixed; top: 50px; left: 0; bottom: 0; width: 80%;
+        background: rgba(0,0,0,0.95); z-index: 1000;
+        border-right: 1px solid var(--term-green);
+        transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        backdrop-filter: blur(10px);
+    }
+    aside.left-panel.mobile-open { transform: translateX(0); }
+
+    /* Правая панель и лишнее */
+    aside.right-panel { display: none; }
+    
+    /* Контент */
+    main { width: 100%; height: calc(100vh - 80px); }
+    
+    /* Тикер */
+    footer { position: fixed; bottom: 0; width: 100%; z-index: 100; }
 }

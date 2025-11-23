@@ -2,194 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>US GOV // SECURE ACCESS GATEWAY</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMEGA // SECURE GATEWAY</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #000; overflow: hidden; height: 100vh; padding: 20px;
+            background: #000; overflow: hidden; height: 100vh;
         }
 
-        /* Анимация загрузки */
-        #boot-sequence {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; color: var(--term-green);
-            font-family: 'Share Tech Mono', monospace;
-            padding: 20px; z-index: 9999;
-            font-size: 14px; line-height: 1.5;
+        #boot-screen {
+            font-size: 14px; line-height: 1.6; color: #444; width: 90%; max-width: 600px;
+        }
+        .highlight { color: var(--term-green); }
+        .error { color: var(--alert-red); }
+
+        .login-box {
+            display: none; /* Скрыто до загрузки */
+            width: 90%; max-width: 400px;
+            border: 1px solid #333; background: #050505;
+            padding: 30px; text-align: center;
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.05);
+            animation: fadeIn 1s;
         }
 
-        /* Контейнер входа */
-        .login-wrapper {
-            display: none;
-            width: 100%; max-width: 450px;
-            border: 1px solid #333;
-            background: rgba(10, 15, 30, 0.95);
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 65, 0.1);
-            padding: 40px; text-align: center;
-            position: relative;
-            box-sizing: border-box;
-        }
-        
-        .seal {
-            width: 100px; margin-bottom: 20px;
-            filter: grayscale(100%) drop-shadow(0 0 5px var(--term-green));
-            opacity: 0.8;
-        }
-
-        .warning-banner {
-            background: rgba(255, 50, 50, 0.1);
-            border: 1px solid var(--alert-red);
-            color: var(--alert-red);
-            font-size: 10px; text-align: left; padding: 10px;
-            margin: 20px 0; line-height: 1.4;
-        }
+        .seal { width: 80px; opacity: 0.8; filter: grayscale(100%); margin-bottom: 20px; }
 
         input {
-            width: 100%; background: #050505; border: 1px solid #444; color: #fff;
-            padding: 15px; font-family: 'Share Tech Mono', monospace; font-size: 18px;
-            text-align: center; margin-bottom: 20px; letter-spacing: 5px;
-            transition: 0.3s; outline: none; box-sizing: border-box;
-            text-transform: uppercase;
+            width: 100%; background: #000; border: 1px solid #333; color: var(--term-green);
+            padding: 15px; font-family: inherit; font-size: 20px; text-align: center;
+            outline: none; margin: 20px 0; letter-spacing: 5px;
         }
-        input:focus { border-color: var(--term-green); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2); }
+        input:focus { border-color: var(--term-green); box-shadow: 0 0 10px rgba(0,255,65,0.2); }
 
-        button {
-            width: 100%; padding: 15px; background: #002200; color: var(--term-green);
-            border: 1px solid var(--term-green); cursor: pointer;
-            text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
-            transition: 0.3s; font-family: 'Share Tech Mono', monospace;
+        #scan-line {
+            height: 2px; background: var(--alert-red); width: 100%;
+            position: absolute; top: 0; left: 0;
+            animation: scan 2s infinite linear;
+            display: none;
         }
-        button:hover { background: var(--term-green); color: #000; box-shadow: 0 0 20px var(--term-green); }
-
-        .meta-info {
-            margin-top: 30px; font-size: 10px; color: #444;
-            display: flex; justify-content: space-between;
-        }
+        @keyframes scan { 0% {top:0;} 50% {top:100%;} 100% {top:0;} }
     </style>
 </head>
 <body>
 
-    <div id="boot-sequence">
-        Initializing secure connection...<br>
-        Loading kernel modules... [OK]<br>
-        Bypassing Langley Firewalls... [OK]<br>
-        Connecting to Shadow Node (DC_04)... [OK]<br>
-        Verifying Biometric Hash...<br>
-        <span style="color: var(--alert-red)">WARNING: UNAUTHORIZED ACCESS DETECTED.</span><br>
-        Initiating Trace Program... <span id="percent">0%</span>
-    </div>
-
-    <div class="login-wrapper" id="login-step-1">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="seal">
-        <h2>CIA // OMEGA CLEARANCE</h2>
-        
-        <div class="warning-banner">
-            <strong>RESTRICTED ACCESS:</strong> You are accessing a U.S. Government Information System. 
-            Unauthorized access is a federal crime punishable by life imprisonment under the Espionage Act of 1917.
-            <br><br>
-            ALL ACTIVITY IS LOGGED.
-        </div>
-
-        <input type="password" id="pwd" placeholder="ACCESS CODE" autocomplete="off">
-        <button onclick="checkPassword()">VERIFY CREDENTIALS</button>
-
-        <div class="meta-info">
-            <span>IP: <span id="ip">Fetching...</span></span>
-            <span>ENC: AES-256-GCM</span>
+    <div id="boot-screen">
+        <div>> KERNEL: OMEGA_CORE_v2.0 initializing...</div>
+        <div>> MEMORY: 128TB QUANTUM RAM check... <span class="highlight">OK</span></div>
+        <div>> FIREWALL: BYPASSING LANGLEY PROXY... <span class="highlight">SUCCESS</span></div>
+        <div>> CONNECTION: SECURE TUNNEL ESTABLISHED (DC_NODE_01)</div>
+        <br>
+        <div id="loading-bar" style="background: #111; width: 100%; height: 10px;">
+            <div id="progress" style="background: var(--term-green); width: 0%; height: 100%;"></div>
         </div>
     </div>
 
-    <div class="login-wrapper" id="login-step-2">
+    <div class="login-box" id="login-panel">
         <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="seal">
-        <h2>IDENTITY CONFIRMATION</h2>
-        <p style="color: #666; margin-bottom: 20px;">BIOMETRIC SCAN COMPLETE.</p>
+        <h2>SECURE ACCESS</h2>
+        <p style="font-size: 10px; color: #666;">UNAUTHORIZED USE IS PUNISHABLE BY PERMANENT ERASURE.</p>
         
-        <div style="margin-bottom: 20px; font-size: 14px; color: var(--term-green)">
-            WELCOME BACK, HANDLER. CONFIRM YOUR CODENAME FOR SESSION LOGS.
-        </div>
+        <input type="password" id="pwd" placeholder="PASSWORD" autocomplete="off">
+        <button class="btn" onclick="attemptLogin()" style="width: 100%;">AUTHENTICATE</button>
+    </div>
 
-        <input type="text" id="alias" placeholder="ENTER CODENAME" autocomplete="off" maxlength="15">
-        <button onclick="finalizeLogin()">ENTER MAINFRAME</button>
+    <div class="login-box" id="biometric-panel" style="position: relative; overflow: hidden;">
+        <div id="scan-line"></div>
+        <h2 style="color: var(--alert-red);">RETINAL SCAN REQUIRED</h2>
+        <div style="font-size: 60px; margin: 20px 0;">👁</div>
+        <div id="bio-status">SCANNING...</div>
     </div>
 
     <script src="assets/js/main.js"></script>
     <script>
-        // 1. Логика экрана загрузки
-        const boot = document.getElementById('boot-sequence');
-        const percent = document.getElementById('percent');
-        let p = 0;
-        
-        const timer = setInterval(() => {
-            p += Math.floor(Math.random() * 5);
-            if(p > 100) p = 100;
-            percent.innerText = p + "%";
-            
-            if(p === 100) {
-                clearInterval(timer);
+        // 1. СЦЕНАРИЙ ЗАГРУЗКИ
+        let progress = 0;
+        const bar = document.getElementById('progress');
+        const interval = setInterval(() => {
+            progress += Math.random() * 5;
+            if(progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                // Переход к логину
                 setTimeout(() => {
-                    boot.style.display = 'none';
-                    document.getElementById('login-step-1').style.display = 'block';
+                    document.getElementById('boot-screen').style.display = 'none';
+                    document.getElementById('login-panel').style.display = 'block';
                     document.getElementById('pwd').focus();
                 }, 500);
             }
+            bar.style.width = progress + "%";
         }, 50);
 
-        // 2. Фейковый IP
-        document.getElementById('ip').innerText = (Math.random()*255).toFixed(0) + '.14.88.' + (Math.random()*255).toFixed(0);
+        // 2. ЛОГИКА ВХОДА
+        const pwdInput = document.getElementById('pwd');
+        pwdInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') attemptLogin(); });
 
-        // 3. Обработка Enter
-        document.getElementById('pwd').addEventListener("keypress", (e) => { if (e.key === "Enter") checkPassword(); });
-        document.getElementById('alias').addEventListener("keypress", (e) => { if (e.key === "Enter") finalizeLogin(); });
-
-        // 4. Проверка пароля
-        function checkPassword() {
-            const input = document.getElementById('pwd');
-            const btn = document.querySelector('#login-step-1 button');
-            const pass = input.value.toUpperCase();
-
-            // ПАРОЛЬ: MAN или 1488
-            if (pass === 'MAN' || pass === '1488') {
+        function attemptLogin() {
+            const val = pwdInput.value.toUpperCase();
+            // Пароли: MAN, 1488, TIGRAN
+            if(val === 'MAN' || val === '1488' || val === 'TIGRAN') {
                 soundClick();
-                btn.innerText = "ACCESS GRANTED.";
-                btn.style.background = "#00ff41";
-                btn.style.color = "#000";
-                
-                setTimeout(() => {
-                    document.getElementById('login-step-1').style.display = 'none';
-                    document.getElementById('login-step-2').style.display = 'block';
-                    document.getElementById('alias').focus();
-                }, 1000);
+                startBiometricScan();
             } else {
                 soundDeny();
-                btn.innerText = "ACCESS DENIED // TRACE STARTED";
-                btn.style.background = "#ff3333";
-                btn.style.color = "#fff";
-                btn.style.borderColor = "#ff3333";
-                input.value = "";
-                input.disabled = true;
-                
+                pwdInput.value = "";
+                pwdInput.placeholder = "INVALID CREDENTIALS";
+                pwdInput.style.borderColor = "red";
                 setTimeout(() => {
-                    btn.innerText = "VERIFY CREDENTIALS";
-                    btn.style.background = "#002200";
-                    btn.style.color = "#00ff41";
-                    btn.style.borderColor = "#00ff41";
-                    input.disabled = false;
-                    input.focus();
-                }, 2000);
+                    pwdInput.style.borderColor = "#333";
+                    pwdInput.placeholder = "PASSWORD";
+                }, 1500);
             }
         }
 
-        // 5. Финализация (Сохранение алиаса)
-        function finalizeLogin() {
-            const aliasInput = document.getElementById('alias');
-            let alias = aliasInput.value.toUpperCase().trim();
-            if(!alias) alias = "UNKNOWN HANDLER";
-
-            localStorage.setItem('omega_alias', alias);
-            soundClick();
+        // 3. БИОМЕТРИЯ (САМОЕ ВАЖНОЕ)
+        function startBiometricScan() {
+            document.getElementById('login-panel').style.display = 'none';
+            const bioPanel = document.getElementById('biometric-panel');
+            bioPanel.style.display = 'block';
+            document.getElementById('scan-line').style.display = 'block';
             
-            window.location.href = "mainframe.html";
+            const status = document.getElementById('bio-status');
+            
+            // Симуляция сканирования
+            setTimeout(() => {
+                status.innerText = "MATCHING DNA SEQUENCE...";
+                soundType();
+            }, 1000);
+
+            setTimeout(() => {
+                document.getElementById('scan-line').style.display = 'none';
+                status.innerHTML = `<span style="color: #00ff41; font-weight: bold;">IDENTITY CONFIRMED</span><br>SUBJECT: TIGRANES (OWNER)`;
+                soundClick();
+                playTone(1000, 'sine', 0.5); // Успешный звук
+                
+                // Сохраняем, что это ТИГРАН
+                OmegaSystem.update('user', 'TIGRANES');
+                
+                setTimeout(() => {
+                    window.location.href = "mainframe.html";
+                }, 2000);
+            }, 2500);
         }
     </script>
 </body>

@@ -4,62 +4,165 @@
     <meta charset="UTF-8">
     <title>PHYSICAL EVIDENCE</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        body { 
+            overflow-x: hidden; 
+            cursor: default; 
+            /* Запрет выделения, чтобы не спалить текст случайно */
+            user-select: none; 
+        }
+
+        /* TOOLBAR */
+        .tools-panel {
+            background: #111; border-bottom: 1px solid #333; padding: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100;
+        }
+        
+        /* UV FLASHLIGHT EFFECT */
+        #uv-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 50;
+            background: radial-gradient(circle 150px at var(--x, 50%) var(--y, 50%), rgba(80, 0, 255, 0.15), rgba(0,0,0,0.85) 100%);
+            display: none; /* Скрыт по умолчанию */
+            mix-blend-mode: hard-light;
+        }
+        
+        body.uv-active { cursor: none; } /* Скрываем курсор при UV */
+        body.uv-active #uv-layer { display: block; }
+
+        /* SECRET INK */
+        .secret-ink {
+            position: absolute;
+            font-family: 'Dancing Script', cursive;
+            color: rgba(255, 255, 255, 0.05); /* Почти невидимый */
+            transform: rotate(-5deg);
+            transition: 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        /* Когда UV включен и мышь рядом (класс добавляется JS-ом) */
+        body.uv-active .secret-ink.revealed {
+            color: #b026ff;
+            text-shadow: 0 0 5px #b026ff, 0 0 10px #b026ff;
+            opacity: 1;
+            z-index: 60;
+        }
+
+        /* DOCUMENTS STYLE UPDATE */
+        .paper-doc { position: relative; transition: transform 0.3s; }
+        .paper-doc:hover { transform: scale(1.02) rotate(0deg); z-index: 10; }
+
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>PHYSICAL EVIDENCE LOCKER</h2>
-    <p style="color: #666; margin-bottom: 20px;">ITEM #9942-B // SCANNED DOCUMENTS</p>
+
+    <div id="uv-layer"></div>
+
+    <div class="tools-panel">
+        <h2 style="margin: 0; font-size: 1.2rem; border: none;">EVIDENCE LOCKER #404</h2>
+        <button class="btn" onclick="toggleUV()" id="uv-btn" style="margin: 0; padding: 10px 20px; font-size: 0.8rem;">
+            🔦 TOGGLE UV LIGHT
+        </button>
+    </div>
+
+    <p style="color: #666; margin: 20px;">INSTRUCTIONS: Use UV Light to scan for biometric residue and hidden ink.</p>
     
-    <div class="grid-2">
+    <div class="grid-2" style="padding-bottom: 50px;">
         
         <div class="paper-doc">
             <div class="stamp">TOP SECRET</div>
-            <h3 style="font-family: inherit; border: none; text-align: center; font-size: 1.5rem;">SEPHORA NYC</h3>
-            <p style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px;">RECEIPT #0001488</p>
+            <h3 style="font-family: inherit; border: none; text-align: center; font-size: 1.5rem; color: #000;">SEPHORA NYC</h3>
+            <p style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; color: #000;">RECEIPT #0001488</p>
             
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span>1x ORANGE SPRAY TAN (GALLON)</span>
-                <span>$50.00</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span>1x INDESTRUCTIBLE HAIR GLUE</span>
-                <span>$20.00</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                <span>1x TINY HAND LOTION</span>
-                <span>$15.00</span>
+            <div style="color: #000; font-size: 0.9rem;">
+                <div style="display: flex; justify-content: space-between;"><span>1x ORANGE SPRAY TAN</span><span>$50.00</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>1x HAIR GLUE</span><span>$20.00</span></div>
+                <div style="display: flex; justify-content: space-between;"><span>1x TINY GLOVES</span><span>$15.00</span></div>
             </div>
             
             <hr style="border-top: 1px dashed #000; border-bottom: none;">
-            <div style="display: flex; justify-content: space-between; font-weight: bold;">
-                <span>TOTAL:</span>
-                <span>$85.00</span>
+            <div style="display: flex; justify-content: space-between; font-weight: bold; color: #000;">
+                <span>TOTAL:</span><span>$85.00</span>
             </div>
-            <hr style="border-top: 1px dashed #000; border-bottom: none;">
             
-            <p style="margin-top: 15px;">
+            <p style="margin-top: 15px; color: #000;">
                 <strong>PAID BY:</strong> [THE BOSS]<br>
-                <strong>SIGNATURE:</strong> <span style="font-family: 'Dancing Script', cursive; font-size: 1.2rem;">[Твоя Подпись]</span>
+                <strong>NOTE:</strong> "For the debate."
             </p>
-            <p style="font-size: 0.8rem;">NOTE: "Make him look extra orange for the debate tonight."</p>
+
+            <div class="secret-ink" style="top: 40%; left: 10%; font-size: 1.5rem; transform: rotate(-20deg);">
+                PASS: TIG_GENESIS
+            </div>
+            <div class="secret-ink" style="top: 80%; left: 50%; font-size: 1rem; border: 2px solid #b026ff; padding: 5px;">
+                CONFIRMED
+            </div>
         </div>
 
         <div class="paper-doc" style="transform: rotate(2deg); background: #fcf8e3;">
             <div class="stamp" style="border-color: #000; color: #000;">INTERCEPTED</div>
-            <h3>HANDWRITTEN NOTE</h3>
-            <p><strong>FROM:</strong> J. Epstein (Cell #4, MCC New York)</p>
-            <p><strong>TO:</strong> The Architect</p>
-            <p>--------------------------------</p>
-            <p style="font-family: 'Courier New', cursive; font-size: 0.9rem; line-height: 1.4;">
-                "Boss, is the plan still on? The guards said they are going to 'sleep' at 3 AM. The cameras are already glitching. 
-                <br><br>
-                I have my bags packed for the Hollow Earth transport. Please tell me the submarine is ready. I hate the food here."
+            <h3 style="color: #000;">HANDWRITTEN NOTE</h3>
+            <p style="color: #000;"><strong>FROM:</strong> Cell #4</p>
+            <p style="font-family: 'Courier New', cursive; font-size: 0.9rem; line-height: 1.4; color: #000;">
+                "Architect, is the submarine ready? The cameras are glitching as promised. I'm ready to go to Sector 7."
             </p>
-            <p style="margin-top: 20px; border: 2px solid var(--alert-red); color: var(--alert-red); padding: 5px; text-align: center; transform: rotate(-5deg); font-weight: bold;">
-                APPROVED BY OMEGA COMMAND
-            </p>
+
+            <div class="secret-ink" style="top: 20%; right: 10%; font-size: 2rem;">👁</div>
+            <div class="secret-ink" style="bottom: 10%; left: 10%; font-size: 1.2rem;">NO ESCAPE</div>
         </div>
 
     </div>
     <script src="../assets/js/main.js"></script>
+    <script>
+        let uvActive = false;
+        const body = document.body;
+        const uvLayer = document.getElementById('uv-layer');
+        const secrets = document.querySelectorAll('.secret-ink');
+
+        function toggleUV() {
+            uvActive = !uvActive;
+            if(uvActive) {
+                body.classList.add('uv-active');
+                document.getElementById('uv-btn').style.background = '#5000ff';
+                document.getElementById('uv-btn').style.color = '#fff';
+                soundClick();
+            } else {
+                body.classList.remove('uv-active');
+                document.getElementById('uv-btn').style.background = '';
+                document.getElementById('uv-btn').style.color = '';
+                soundClick();
+            }
+        }
+
+        // Слежение за мышью
+        document.addEventListener('mousemove', (e) => {
+            if(!uvActive) return;
+
+            const x = e.clientX;
+            const y = e.clientY;
+
+            // Двигаем слой фонарика
+            uvLayer.style.setProperty('--x', x + 'px');
+            uvLayer.style.setProperty('--y', y + 'px');
+
+            // Проверяем расстояние до секретов
+            secrets.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const elX = rect.left + rect.width / 2;
+                const elY = rect.top + rect.height / 2;
+                
+                const dist = Math.sqrt(Math.pow(x - elX, 2) + Math.pow(y - elY, 2));
+                
+                // Если фонарик близко (< 100px), показываем текст
+                if(dist < 100) {
+                    el.classList.add('revealed');
+                } else {
+                    el.classList.remove('revealed');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

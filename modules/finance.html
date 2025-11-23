@@ -4,37 +4,225 @@
     <meta charset="UTF-8">
     <title>SHADOW FINANCE</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        body { overflow-y: auto; padding-bottom: 50px; }
+
+        /* HEADER & BALANCE */
+        .finance-header {
+            text-align: center; margin-bottom: 30px;
+            border-bottom: 2px solid var(--term-green); padding-bottom: 20px;
+            background: linear-gradient(180deg, rgba(0,20,0,0.8) 0%, rgba(0,0,0,0) 100%);
+        }
+        .balance-display {
+            font-size: 4rem; color: #fff; text-shadow: 0 0 20px var(--term-green);
+            font-family: 'Oswald', sans-serif; margin: 10px 0;
+        }
+        .income-display { color: #666; font-size: 0.9rem; }
+
+        /* MONEY PRINTER */
+        .printer-section { text-align: center; margin-bottom: 40px; }
+        .print-btn {
+            width: 200px; height: 200px; border-radius: 50%;
+            background: radial-gradient(circle, #003300 0%, #000 70%);
+            border: 5px solid var(--term-green); color: var(--term-green);
+            font-size: 1.5rem; font-weight: bold; cursor: pointer;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+            transition: 0.1s; user-select: none;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto; flex-direction: column;
+        }
+        .print-btn:active { transform: scale(0.95); box-shadow: 0 0 50px var(--term-green); background: #004400; }
+        .print-btn span { font-size: 0.8rem; color: #444; margin-top: 5px; }
+
+        /* UPGRADES GRID */
+        .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        
+        .upgrade-card {
+            border: 1px solid #333; background: #050505; padding: 15px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: 0.2s; opacity: 0.8;
+        }
+        .upgrade-card:hover { border-color: var(--term-green); opacity: 1; transform: translateY(-5px); }
+        .upgrade-card.locked { opacity: 0.3; pointer-events: none; filter: grayscale(100%); }
+        
+        .item-name { color: #fff; font-weight: bold; font-size: 1rem; }
+        .item-cost { color: var(--alert-red); font-size: 0.9rem; margin: 5px 0; }
+        .item-desc { color: #666; font-size: 0.75rem; margin-bottom: 10px; height: 30px; }
+        .item-count { float: right; color: var(--term-green); font-weight: bold; }
+
+        /* Floating Numbers Animation */
+        .float-num {
+            position: absolute; color: var(--term-green); font-weight: bold; pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+    </style>
 </head>
 <body>
-    <h2>SHADOW ACCOUNTS MANAGER</h2>
     
-    <div class="grid-2">
-        <div class="card">
-            <h3>TOTAL LIQUIDITY</h3>
-            <div style="font-size: 4rem; color: #fff; margin: 20px 0; text-shadow: 0 0 10px #fff;">$ ∞</div>
-            <p style="font-size: 0.8rem; color: #666;">CURRENCY: USD / BTC / GOLD / SOULS</p>
-            <button class="btn">PRINT MORE MONEY (FED)</button>
-        </div>
-        
-        <div class="card">
-            <h3>ASSET PORTFOLIO</h3>
-            <ul style="list-style: none; padding: 0; line-height: 2;">
-                <li>> BLACKROCK: <span style="color: var(--term-green); float: right;">OWNED (100%)</span></li>
-                <li>> VANGUARD: <span style="color: var(--term-green); float: right;">OWNED (100%)</span></li>
-                <li>> BITCOIN CEO: <span style="color: var(--term-green); float: right;">IT'S YOU</span></li>
-                <li>> APPLE: <span style="color: var(--term-green); float: right;">OWNED (SHELL CORP)</span></li>
-            </ul>
-        </div>
+    <div class="finance-header">
+        <h2>SHADOW LIQUIDITY POOL</h2>
+        <div class="balance-display" id="display-balance">$0</div>
+        <div class="income-display">PASSIVE INCOME: <span id="display-income">$0</span> / SEC</div>
     </div>
 
-    <h3>RECENT TRANSACTIONS (SWIFT-X)</h3>
-    <table>
-        <tr><th>DATE</th><th>RECIPIENT</th><th>AMOUNT</th><th>MEMO</th></tr>
-        <tr><td>TODAY</td><td>NASA (Black Ops)</td><td>$50,000,000,000</td><td>Project "Flat Earth Dome Repair"</td></tr>
-        <tr><td>YESTERDAY</td><td>Argentina</td><td>$1 (Symbolic)</td><td>Bought the whole country for vacation.</td></tr>
-        <tr><td>10/05</td><td>Mark Zuckerberg</td><td>$500,000</td><td>Robot Maintenance Fee (Oil change)</td></tr>
-        <tr><td>01/01</td><td>Time Traveler</td><td>$999,999,999</td><td>Bribe to fix 2012 Timeline glitch</td></tr>
-    </table>
+    <div class="printer-section">
+        <div class="print-btn" id="print-btn" onclick="manualPrint(event)">
+            PRINT
+            <span>(FED API ACCESS)</span>
+        </div>
+        <p style="margin-top: 15px; color: #444; font-size: 12px;">CLICK TO INFLATE ECONOMY</p>
+    </div>
+
+    <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;">ASSET ACQUISITION</h3>
+    
+    <div class="shop-grid" id="shop-container">
+        </div>
+
     <script src="../assets/js/main.js"></script>
+    <script>
+        // 1. CONFIG
+        // Пытаемся взять данные из родительского окна (если мы в iframe), чтобы синхронизация была мгновенной
+        // Если нет, используем локальный экземпляр OmegaSystem
+        const System = window.parent.OmegaSystem || OmegaSystem;
+
+        const UPGRADES = [
+            { id: 'botnet', name: 'Twitter Botnet', cost: 100, income: 5, desc: 'Spams memes automatically.' },
+            { id: 'senator', name: 'US Senator', cost: 1000, income: 50, desc: 'Votes whatever you want.' },
+            { id: 'media', name: 'CNN / FOX', cost: 15000, income: 200, desc: 'Controls the narrative.' },
+            { id: 'blackrock', name: 'BlackRock Share', cost: 100000, income: 1500, desc: 'Own everything.' },
+            { id: 'fed', name: 'Federal Reserve', cost: 1000000, income: 10000, desc: 'Money printer go BRRR.' },
+            { id: 'country', name: 'Small Country', cost: 50000000, income: 500000, desc: 'Argentina is on sale.' }
+        ];
+
+        let owned = JSON.parse(localStorage.getItem('omega_finance_owned')) || {};
+        
+        // 2. INIT
+        function init() {
+            // Инициализация пустых покупок
+            UPGRADES.forEach(u => {
+                if(!owned[u.id]) owned[u.id] = 0;
+            });
+            renderShop();
+            gameLoop();
+        }
+
+        // 3. CORE LOGIC
+        function getBalance() { return System.state.balance; }
+        
+        function updateBalance(amount) {
+            let bal = getBalance();
+            bal += amount;
+            System.update('balance', bal);
+            updateUI();
+        }
+
+        function calculateIncome() {
+            let income = 0;
+            UPGRADES.forEach(u => {
+                income += (owned[u.id] * u.income);
+            });
+            return income;
+        }
+
+        // 4. ACTIONS
+        function manualPrint(e) {
+            const amount = 10 + (owned['botnet'] * 2); // Клики тоже качаются немного
+            updateBalance(amount);
+            
+            // Visual Effect
+            showFloatingText(e.clientX, e.clientY, `+$${amount}`);
+            soundClick(); // Из main.js
+            
+            // Анимация кнопки
+            const btn = document.getElementById('print-btn');
+            btn.style.transform = "scale(0.95)";
+            setTimeout(() => btn.style.transform = "scale(1)", 100);
+        }
+
+        function buyItem(id) {
+            const item = UPGRADES.find(u => u.id === id);
+            const currentPrice = Math.floor(item.cost * Math.pow(1.15, owned[id])); // Цена растет
+            
+            if(getBalance() >= currentPrice) {
+                updateBalance(-currentPrice);
+                owned[id]++;
+                localStorage.setItem('omega_finance_owned', JSON.stringify(owned));
+                renderShop(); // Перерисовать цены
+                soundClick();
+            } else {
+                soundDeny();
+            }
+        }
+
+        // 5. VISUALS
+        function formatMoney(num) {
+            if(num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+            if(num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+            if(num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+            if(num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+            return Math.floor(num);
+        }
+
+        function showFloatingText(x, y, text) {
+            const el = document.createElement('div');
+            el.className = 'float-num';
+            el.innerText = text;
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+
+        function renderShop() {
+            const container = document.getElementById('shop-container');
+            container.innerHTML = '';
+            
+            UPGRADES.forEach(u => {
+                const count = owned[u.id];
+                const price = Math.floor(u.cost * Math.pow(1.15, count));
+                const canAfford = getBalance() >= price;
+
+                const div = document.createElement('div');
+                div.className = `upgrade-card ${canAfford ? '' : 'locked'}`;
+                div.onclick = () => buyItem(u.id);
+                div.innerHTML = `
+                    <div>
+                        <div class="item-name">${u.name} <span class="item-count">x${count}</span></div>
+                        <div class="item-cost">$${formatMoney(price)}</div>
+                        <div class="item-desc">${u.desc}</div>
+                    </div>
+                    <div style="font-size: 0.8rem; color: #444;">+${formatMoney(u.income)}/s</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateUI() {
+            document.getElementById('display-balance').innerText = '$' + formatMoney(getBalance());
+            document.getElementById('display-income').innerText = '$' + formatMoney(calculateIncome());
+            
+            // Разблокировка кнопок в реальном времени
+            const cards = document.querySelectorAll('.upgrade-card');
+            UPGRADES.forEach((u, index) => {
+                const price = Math.floor(u.cost * Math.pow(1.15, owned[u.id]));
+                if(getBalance() >= price) cards[index].classList.remove('locked');
+                else cards[index].classList.add('locked');
+            });
+        }
+
+        // 6. GAME LOOP (1s tick)
+        function gameLoop() {
+            setInterval(() => {
+                const inc = calculateIncome();
+                if(inc > 0) updateBalance(inc);
+            }, 1000);
+        }
+
+        init();
+    </script>
 </body>
 </html>
