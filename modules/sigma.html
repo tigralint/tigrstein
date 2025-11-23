@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../css/terminal.css">
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; overflow: hidden; }
+        
+        .sigma-photo {
+            width: 400px; border: 10px solid #fff;
+            filter: grayscale(100%) contrast(120%);
+            animation: pump 0.46s infinite alternate; /* Бит */
+            display: none; /* Скрыто до нажатия */
+        }
+
+        @keyframes pump { from { transform: scale(1); } to { transform: scale(1.05); } }
+
+        .title { font-size: 60px; color: #fff; text-transform: uppercase; font-weight: bold; display: none; }
+        .subtitle { font-size: 30px; color: #ff3333; letter-spacing: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" style="text-align: center;">
+        <h1 style="color: #ff3333; font-size: 40px;">⚠ TOP SECRET ⚠</h1>
+        <p>EYES ONLY. DO NOT OPEN UNLESS AUTHORIZED.</p>
+        <br>
+        <button class="btn" style="font-size: 24px; padding: 20px 40px;" onclick="reveal()">DECRYPT MASTER FILE</button>
+    </div>
+
+    <img src="../assets/img/YOU_SIGMA.jpg" class="sigma-photo" id="photo">
+    <div class="title" id="t1">IT WAS ME</div>
+    <div class="subtitle" id="t2">ALL ALONG</div>
+
+    <audio id="drop-music" src="../audio/are_you_man_enough_drop.mp3"></audio>
+
+    <script>
+        function reveal() {
+            // Скрываем кнопку
+            document.getElementById('start-screen').style.display = 'none';
+            
+            // Показываем контент
+            const photo = document.getElementById('photo');
+            const t1 = document.getElementById('t1');
+            const t2 = document.getElementById('t2');
+            
+            photo.style.display = 'block';
+            t1.style.display = 'block';
+            t2.style.display = 'block';
+
+            // Включаем музыку
+            const audio = document.getElementById('drop-music');
+            audio.currentTime = 0;
+            audio.volume = 1.0;
+            audio.play();
+
+            // Стробоскоп (мигание фона)
+            const colors = ['#000', '#500', '#000', '#200'];
+            let i = 0;
+            setInterval(() => {
+                document.body.style.backgroundColor = colors[i];
+                i = (i + 1) % colors.length;
+            }, 230); // Подгони скорость под BPM трека
+        }
+    </script>
+</body>
+</html>

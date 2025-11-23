@@ -2,467 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>OMEGA MAIN FRAME // LEVEL 9</title>
+    <title>OMEGA OS // ADMINISTRATOR</title>
+    <link rel="stylesheet" href="css/terminal.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
-        :root {
-            --bg-color: #020202;
-            --main-color: #00ff41; /* Хакерский зеленый */
-            --alert-color: #d32f2f; /* Красный */
-            --dim-color: #003b00;
-            --text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
-        }
-
-        body {
-            background: var(--bg-color);
-            color: var(--main-color);
-            font-family: 'Share Tech Mono', monospace;
-            margin: 0;
-            height: 100vh;
-            display: grid;
-            grid-template-columns: 260px 1fr 320px;
-            grid-template-rows: 60px 1fr 30px;
-            overflow: hidden;
-            /* Эффект ЭЛТ монитора (полоски) */
-            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
-        }
-
-        /* --- ШАПКА --- */
+        body { padding: 0; height: 100vh; display: grid; grid-template-rows: 50px 1fr; overflow: hidden; }
+        
+        /* Шапка */
         header {
-            grid-column: 1 / -1;
-            border-bottom: 1px solid #333;
-            display: flex;
-            align-items: center;
-            padding: 0 25px;
-            background: #050505;
-            justify-content: space-between;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+            background: #0a0a0a; border-bottom: 1px solid var(--term-green);
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between;
+            z-index: 20;
         }
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 4px; text-shadow: var(--text-shadow); }
-        .top-stat { font-size: 12px; color: #666; }
-        .status-live { color: var(--alert-color); animation: blink 1s infinite; font-weight: bold; }
-
-        /* --- ЛЕВОЕ МЕНЮ --- */
-        aside.sidebar-left {
-            border-right: 1px solid #333;
-            background: #080808;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .section-title { color: #444; font-size: 10px; margin-top: 15px; margin-bottom: 5px; letter-spacing: 2px; }
         
-        .nav-item {
-            padding: 12px 15px;
-            border: 1px solid transparent;
-            color: #888;
+        /* Макет */
+        .layout { display: grid; grid-template-columns: 260px 1fr; height: 100%; }
+        
+        /* Сайдбар (Меню) */
+        aside {
+            background: #020202; border-right: 1px solid #333; padding: 15px;
+            display: flex; flex-direction: column; gap: 5px;
+        }
+        
+        .nav-category { color: #555; font-size: 10px; letter-spacing: 2px; margin: 15px 0 5px 0; font-weight: bold; }
+        
+        .nav-btn {
+            display: block; padding: 10px 15px; text-decoration: none; color: #888;
+            border-left: 2px solid transparent; transition: 0.2s; font-size: 13px;
             cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
         }
-        .nav-item:hover { color: #fff; background: #111; }
-        .nav-item.active {
-            border: 1px solid var(--main-color);
-            color: var(--main-color);
-            background: rgba(0, 255, 65, 0.05);
-            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.1);
+        .nav-btn:hover, .nav-btn.active {
+            background: #111; color: #fff; border-left-color: var(--term-green);
+            text-shadow: 0 0 5px var(--term-green);
         }
-        .nav-item::before { content: "> "; margin-right: 10px; opacity: 0.5; }
-        .nav-item.active::before { content: "█ "; opacity: 1; }
+        .nav-btn::before { content: "> "; opacity: 0.3; }
+        .nav-btn.active::before { content: "█ "; opacity: 1; }
 
-        /* --- ЦЕНТРАЛЬНЫЙ ЭКРАН --- */
-        main {
-            position: relative;
-            padding: 30px;
-            overflow-y: auto;
-            background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+        /* Основной экран (iframe) */
+        main { position: relative; background: #000; }
+        iframe {
+            width: 100%; height: 100%; border: none;
+            /* Фоновая текстура для пустых мест */
+            background-image: radial-gradient(#111 10%, transparent 10%);
+            background-size: 10px 10px;
         }
-        /* Скроллбар */
-        main::-webkit-scrollbar { width: 8px; }
-        main::-webkit-scrollbar-track { background: #000; }
-        main::-webkit-scrollbar-thumb { background: #333; border: 1px solid #000; }
-
-        /* Окна данных (Вкладки) */
-        .data-window { display: none; animation: glitchFade 0.4s; }
-        .data-window.active { display: block; }
-
-        h2 {
-            border-bottom: 2px solid var(--main-color);
-            padding-bottom: 10px;
-            margin-top: 0;
-            font-size: 22px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Стили для контента */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card {
-            border: 1px solid #333; background: rgba(255,255,255,0.02); padding: 15px;
-            transition: 0.3s;
-        }
-        .card:hover { border-color: var(--main-color); }
-
-        /* Таблицы */
-        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 15px; }
-        th { text-align: left; color: #fff; border-bottom: 1px solid #555; padding: 8px; }
-        td { border-bottom: 1px solid #222; padding: 8px; color: #aaa; }
-        tr:hover td { color: #fff; background: rgba(255,255,255,0.05); cursor: crosshair; }
-        
-        .redacted { background: #aaa; color: #aaa; padding: 0 4px; cursor: help; user-select: none; }
-        .redacted:hover { background: transparent; color: var(--alert-color); }
-
-        /* Досье (Targets) */
-        .profile-img {
-            width: 100%; height: 150px; object-fit: cover; filter: grayscale(100%) contrast(1.2);
-            border-bottom: 1px solid var(--main-color);
-        }
-        .stat-row { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px; border-bottom: 1px dashed #333; padding-bottom: 2px; }
-
-        /* Чат (Intercepts) */
-        .chat-box { height: 400px; overflow-y: auto; border: 1px solid #333; padding: 15px; background: #050505; }
-        .msg { margin-bottom: 15px; padding: 10px; border-left: 3px solid; font-size: 13px; }
-        .msg.target { border-color: var(--alert-color); background: rgba(211, 47, 47, 0.05); }
-        .msg.you { border-color: var(--main-color); background: rgba(0, 255, 65, 0.05); text-align: right; }
-        .msg-meta { font-size: 10px; opacity: 0.5; margin-bottom: 5px; }
-
-        /* ПРОЕКТ СИГМА */
-        #sigma h1 { font-size: 60px; color: #fff; text-align: center; margin-top: 100px; text-shadow: 4px 4px 0 var(--alert-color); }
-        .big-btn {
-            display: block; width: 300px; margin: 50px auto; padding: 20px;
-            border: 2px solid var(--alert-color); color: var(--alert-color);
-            background: transparent; font-family: inherit; font-size: 18px; font-weight: bold;
-            cursor: pointer; text-transform: uppercase; letter-spacing: 2px;
-            transition: 0.3s;
-        }
-        .big-btn:hover { background: var(--alert-color); color: #000; box-shadow: 0 0 30px var(--alert-color); }
-
-        /* --- ПРАВАЯ ПАНЕЛЬ (ЛОГИ) --- */
-        aside.sidebar-right {
-            border-left: 1px solid #333;
-            background: #030303;
-            padding: 15px;
-            font-size: 11px;
-            color: #666;
-            display: flex;
-            flex-direction: column;
-        }
-        .log-entry { margin-bottom: 8px; border-bottom: 1px solid #111; padding-bottom: 4px; }
-        .log-time { color: var(--main-color); margin-right: 5px; }
-
-        /* --- ФУТЕР --- */
-        footer {
-            grid-column: 1 / -1;
-            background: #111;
-            border-top: 1px solid #333;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            font-size: 11px;
-            color: #555;
-            justify-content: space-between;
-        }
-
-        /* --- ОВЕРЛЕЙ (ДРОП) --- */
-        #sigma-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: none;
-            flex-direction: column; justify-content: center; align-items: center;
-        }
-        .sigma-photo-container { position: relative; }
-        .sigma-photo {
-            width: 500px; border: 10px solid #fff;
-            filter: grayscale(100%) contrast(120%);
-            animation: pump 0.46s infinite alternate; /* Подгонка под бит */
-        }
-        .sigma-title { font-size: 80px; color: #fff; font-weight: bold; margin-top: 20px; text-transform: uppercase; }
-        .sigma-sub { font-size: 30px; color: var(--alert-color); letter-spacing: 10px; }
-
-        /* АНИМАЦИИ */
-        @keyframes blink { 50% { opacity: 0; } }
-        @keyframes glitchFade { 0% { opacity: 0; transform: translateX(-10px); } 100% { opacity: 1; transform: translateX(0); } }
-        @keyframes pump { from { transform: scale(1); } to { transform: scale(1.02); } }
-
     </style>
 </head>
 <body>
 
     <audio id="bg-music" loop src="audio/placing_the_blame_intro.mp3"></audio>
-    <audio id="drop-music" src="audio/are_you_man_enough_drop.mp3"></audio>
+    
     <header>
-        <div class="logo">OMEGA // DATABASE</div>
-        <div class="top-stat">
-            RAM: 64TB | CPU: QUANTUM-9 | CONNECTION: <span style="color:#fff">ENCRYPTED</span>
-        </div>
-        <div class="status-live">● LIVE FEED</div>
+        <div>SYSTEM: <strong>DEEP_STATE_CORE_v9</strong></div>
+        <div class="text-alert">⚠ VPN: ENCRYPTED (NODE: LANGLEY_DC)</div>
     </header>
 
-    <aside class="sidebar-left">
-        <div class="section-title">MAIN MODULES</div>
-        <div class="nav-item active" onclick="showTab('surveillance', this)">SURVEILLANCE GRID</div>
-        <div class="nav-item" onclick="showTab('targets', this)">TARGET PROFILES</div>
-        <div class="nav-item" onclick="showTab('intercepts', this)">AUDIO INTERCEPTS</div>
-        <div class="nav-item" onclick="showTab('logs', this)">FLIGHT LOGS</div>
-        
-        <div class="section-title">HIDDEN ASSETS</div>
-        <div class="nav-item" onclick="showTab('finance', this)">BLACK BUDGET</div>
-        <div class="nav-item" onclick="showTab('emails', this)">DELETED EMAILS</div>
+    <div class="layout">
+        <aside>
+            <div class="nav-category">DASHBOARD</div>
+            <a href="modules/dashboard.html" target="screen" class="nav-btn active" onclick="select(this)">MAIN_VIEW</a>
+            
+            <div class="nav-category">DATABASE</div>
+            <a href="modules/targets.html" target="screen" class="nav-btn" onclick="select(this)">TARGET_PROFILES</a>
+            <a href="modules/flight_logs.html" target="screen" class="nav-btn" onclick="select(this)">FLIGHT_LOGS.XLS</a>
+            <a href="modules/timeline.html" target="screen" class="nav-btn" onclick="select(this)">WORLD_HISTORY_EDIT</a>
+            
+            <div class="nav-category">SURVEILLANCE</div>
+            <a href="modules/intercepts.html" target="screen" class="nav-btn" onclick="select(this)">AUDIO_INTERCEPTS</a>
+            <a href="modules/evidence.html" target="screen" class="nav-btn" onclick="select(this)">PHYSICAL_EVIDENCE</a>
+            <a href="modules/finance.html" target="screen" class="nav-btn" onclick="select(this)">SHADOW_FINANCE</a>
 
-        <div style="flex-grow: 1;"></div>
-        <div class="nav-item" style="color: var(--alert-color); border-color: var(--alert-color);" onclick="showTab('sigma', this)">
-            ⚠ PROJECT: SIGMA
-        </div>
-    </aside>
-
-    <main>
-        
-        <div id="surveillance" class="data-window active">
-            <h2>GLOBAL EYE // SATELLITE FEED</h2>
-            <div class="grid-2">
-                <div class="card" style="text-align: center;">
-                    <div style="height: 200px; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid #333; color: #444;">
-                        [CAM_01: EPSTEIN ISLAND] <br> SIGNAL LOST (2019)
-                    </div>
-                    <p>>> LOCATION: LITTLE ST. JAMES</p>
-                    <p>>> STATUS: <span style="color:var(--alert-color)">CLEANED</span></p>
-                </div>
-                <div class="card" style="text-align: center;">
-                    <div style="height: 200px; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid #333; color: #444;">
-                        [CAM_02: MAR-A-LAGO] <br> RECORDING...
-                    </div>
-                    <p>>> LOCATION: PALM BEACH, FL</p>
-                    <p>>> TARGET DETECTED: D. TRUMP</p>
-                </div>
+            <div style="flex-grow: 1"></div>
+            <div style="border-top: 1px solid #333; padding-top: 10px;">
+                <a href="modules/sigma.html" target="screen" class="nav-btn" style="color: var(--alert-red); border-color: var(--alert-red);" onclick="select(this)">!!! PROJECT_SIGMA !!!</a>
             </div>
-            <br>
-            <h3>SYSTEM NOTIFICATIONS</h3>
-            <div style="background: rgba(255,0,0,0.1); padding: 15px; border-left: 3px solid var(--alert-color);">
-                <strong>ALERT:</strong> Unauthorized drone detected near Sector 7. <br>
-                <strong>ACTION:</strong> Auto-defense systems engaged. Drone neutralized.
-            </div>
-        </div>
+        </aside>
 
-        <div id="targets" class="data-window">
-            <h2>PRIORITY TARGETS</h2>
-            <div class="grid-2">
-                <div class="card">
-                    <img src="assets/img/trump_angry.jpg" class="profile-img" alt="Trump">
-                    <h3 style="color:#fff; margin: 10px 0;">ASSET: DONALD J. TRUMP</h3>
-                    <div class="stat-row"><span>CODENAME:</span> <span>ORANGE MAN</span></div>
-                    <div class="stat-row"><span>ROLE:</span> <span>DISTRACTION</span></div>
-                    <div class="stat-row"><span>IQ:</span> <span>VARIABLE</span></div>
-                    <div class="stat-row"><span>HANDLER:</span> <span class="redacted">[YOU]</span></div>
-                    <p style="font-size: 11px; color: #888; margin-top: 10px;">
-                        NOTES: Subject is highly volatile. Requires constant validation. Use "The Wig" protocol if he goes rogue.
-                    </p>
-                </div>
-                <div class="card">
-                    <img src="assets/img/epstein_mugshot.jpg" class="profile-img" alt="Epstein">
-                    <h3 style="color:#fff; margin: 10px 0;">ASSET: JEFFREY EPSTEIN</h3>
-                    <div class="stat-row"><span>CODENAME:</span> <span>ISLAND BOY</span></div>
-                    <div class="stat-row"><span>STATUS:</span> <span style="color:var(--alert-color)">EXTRACTED</span></div>
-                    <div class="stat-row"><span>LOCATION:</span> <span>HOLLOW EARTH</span></div>
-                    <div class="stat-row"><span>HANDLER:</span> <span class="redacted">[YOU]</span></div>
-                    <p style="font-size: 11px; color: #888; margin-top: 10px;">
-                        NOTES: Extraction successful. Plastic surgery complete. Currently managing the Antarctica branch.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div id="intercepts" class="data-window">
-            <h2>AUDIO & TEXT INTERCEPTS</h2>
-            <div class="chat-box">
-                <div class="msg target">
-                    <div class="msg-meta">SOURCE: ENCRYPTED PHONE (D. TRUMP) | 02:45 AM</div>
-                    <strong>TRUMP:</strong> Boss, I posted the meme. It has 100 million likes. The best likes. Everyone is talking about it. Can I go golfing now?
-                </div>
-                <div class="msg you">
-                    <div class="msg-meta">SOURCE: OMEGA TERMINAL (YOU) | 02:46 AM</div>
-                    <strong>YOU:</strong> No. Wait for the signal. And stop using caps lock.
-                </div>
-                <div class="msg target">
-                    <div class="msg-meta">SOURCE: ENCRYPTED PHONE (D. TRUMP) | 02:47 AM</div>
-                    <strong>TRUMP:</strong> SORRY SIR. IT WAS AN ACCIDENT.
-                </div>
-                <hr style="border-color:#333; opacity: 0.3;">
-                <div class="msg target">
-                    <div class="msg-meta">SOURCE: BUNKER INTERCOM (EPSTEIN) | YESTERDAY</div>
-                    <strong>EPSTEIN:</strong> It's cold down here. The lizard people are rude.
-                </div>
-                <div class="msg you">
-                    <div class="msg-meta">SOURCE: OMEGA TERMINAL (YOU) | YESTERDAY</div>
-                    <strong>YOU:</strong> Deal with it. It's better than prison.
-                </div>
-            </div>
-        </div>
-
-        <div id="logs" class="data-window">
-            <h2>FLIGHT MANIFEST: "LOLITA EXPRESS"</h2>
-            <input type="text" placeholder="SEARCH PASSENGER..." style="background: #111; border: 1px solid #444; color: #fff; padding: 10px; width: 300px; font-family: inherit;">
-            <table>
-                <tr><th>DATE</th><th>PASSENGER</th><th>DESTINATION</th><th>NOTES</th></tr>
-                <tr><td>1999-04-12</td><td>CLINTON, B.</td><td>ISLAND</td><td> Requested saxophone</td></tr>
-                <tr><td>2002-08-20</td><td>GATES, B.</td><td>PARIS</td><td> Discussing microchips</td></tr>
-                <tr><td>2005-11-05</td><td>PRINCE ANDREW</td><td>UNKNOWN</td><td> [REDACTED]</td></tr>
-                <tr><td>2010-01-30</td><td>HAWKING, S.</td><td>ISLAND</td><td> Wanted to see the chalkboard</td></tr>
-                <tr style="color: #fff; background: rgba(0, 255, 65, 0.1);">
-                    <td>2025-09-02</td>
-                    <td><strong>[ТВОЕ ИМЯ]</strong></td>
-                    <td><strong>OMEGA HQ</strong></td>
-                    <td><strong>STATUS: SUPREME COMMANDER</strong></td>
-                </tr>
-            </table>
-        </div>
-
-        <div id="finance" class="data-window">
-            <h2>SHADOW ACCOUNTS MANAGER</h2>
-            <div class="grid-2">
-                <div class="card">
-                    <h3>TOTAL LIQUIDITY</h3>
-                    <div style="font-size: 40px; color: #fff;">$ ∞</div>
-                    <p style="font-size: 12px; color: #666;">CURRENCY: USD / BTC / GOLD / SOULS</p>
-                </div>
-                <div class="card">
-                    <h3>RECENT TRANSACTIONS</h3>
-                    <ul style="font-size: 12px; padding-left: 20px; line-height: 1.6;">
-                        <li>Sent $50B to NASA (Cover-up ops)</li>
-                        <li>Bought Argentina (Vacation home)</li>
-                        <li>Paid Mark Zuckerberg (Robot maintenance fee)</li>
-                        <li>Bribe to Time Traveler (Timeline correction)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="emails" class="data-window">
-            <h2>DELETED EMAILS ARCHIVE</h2>
-            <p>RECOVERING FRAGMENTS...</p>
-            <div style="color: #444;">
-                [CORRUPTED DATA] <br>
-                [CORRUPTED DATA] <br>
-                ... <br>
-                SUBJECT: The Pizza Party <br>
-                FROM: H. Clinton <br>
-                BODY: Did you order the cheese pizza? [REST OF MESSAGE DELETED]
-            </div>
-        </div>
-
-        <div id="sigma" class="data-window">
-            <div style="text-align: center;">
-                <h1 style="color: var(--alert-color);">PROJECT: SIGMA</h1>
-                <p>WARNING: LEVEL 10 CLEARANCE REQUIRED.</p>
-                <p>THIS FILE CONTAINS THE IDENTITY OF THE TRUE RULER OF THE WORLD.</p>
-                
-                <button class="big-btn" onclick="triggerSigma()">DECRYPT MASTER FILE</button>
-                
-                <div id="decrypt-log" style="color: var(--main-color); font-size: 12px; min-height: 20px;"></div>
-            </div>
-        </div>
-
-    </main>
-
-    <aside class="sidebar-right">
-        <div style="border-bottom: 1px solid #333; margin-bottom: 10px; color: #fff;">SYSTEM ACTIVITY LOG</div>
-        <div id="system-log">
-            </div>
-    </aside>
-
-    <footer>
-        <div>NODE: LANGLEY_DC_04</div>
-        <div>ENCRYPTION: AES-256-GCM</div>
-        <div>UPTIME: 99.9999%</div>
-    </footer>
-
-    <div id="sigma-overlay">
-        <div class="sigma-photo-container">
-            <img src="assets/img/YOU_SIGMA.jpg" class="sigma-photo" alt="THE BOSS">
-        </div>
-        <div class="sigma-title">IT WAS ME</div>
-        <div class="sigma-sub">ALL ALONG</div>
+        <main>
+            <iframe src="modules/dashboard.html" name="screen" id="main-frame"></iframe>
+        </main>
     </div>
 
     <script>
-        // 1. Инициализация
+        // Активация звука при первом клике
         document.body.addEventListener('click', () => {
             const bg = document.getElementById('bg-music');
-            if(bg.paused) { bg.volume = 0.2; bg.play(); }
+            if(bg.paused) { bg.volume = 0.3; bg.play(); }
         }, {once:true});
 
-        // 2. Переключение вкладок
-        function showTab(tabId, btn) {
-            // Скрываем все
-            document.querySelectorAll('.data-window').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            // Показываем нужное
-            document.getElementById(tabId).classList.add('active');
-            if(btn) btn.classList.add('active');
-
-            // Звук (фейк)
-            addLog("User accessed module: " + tabId.toUpperCase());
-        }
-
-        // 3. Логгер справа
-        function addLog(text) {
-            const logContainer = document.getElementById('system-log');
-            const time = new Date().toLocaleTimeString('en-US', {hour12:false});
-            const entry = `<div class="log-entry"><span class="log-time">[${time}]</span> ${text}</div>`;
-            logContainer.insertAdjacentHTML('afterbegin', entry);
-        }
-
-        // Генерация случайных логов для атмосферы
-        setInterval(() => {
-            const events = [
-                "Encrypted packet received", "Ping from Sector 7", "Botnet update complete", 
-                "Tracing connection...", "Financial transaction verified", "Asset 'Trump' moved to Florida"
-            ];
-            const rnd = events[Math.floor(Math.random() * events.length)];
-            addLog(rnd);
-        }, 4000);
-
-        // 4. ФИНАЛ (SIGMA REVEAL)
-        function triggerSigma() {
-            const logDiv = document.getElementById('decrypt-log');
-            let dots = 0;
-            
-            // Анимация "Взлома"
-            const interval = setInterval(() => {
-                logDiv.innerText = "DECRYPTING" + ".".repeat(dots);
-                dots = (dots + 1) % 4;
-            }, 200);
-
-            setTimeout(() => {
-                clearInterval(interval);
-                launchDrop();
-            }, 2000); // 2 секунды задержки перед дропом
-        }
-
-        function launchDrop() {
-            const bg = document.getElementById('bg-music');
-            const drop = document.getElementById('drop-music');
-            const overlay = document.getElementById('sigma-overlay');
-
-            bg.pause();
-            drop.currentTime = 0;
-            drop.play();
-            drop.volume = 1.0;
-
-            overlay.style.display = 'flex';
-
-            // Стробоскоп фона
-            const colors = ['#000', '#300', '#000', '#100', '#500'];
-            let i = 0;
-            setInterval(() => {
-                overlay.style.backgroundColor = colors[i];
-                i = (i + 1) % colors.length;
-            }, 235); // Скорость под бит песни (примерно)
+        // Подсветка кнопок
+        function select(el) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
         }
     </script>
 </body>
