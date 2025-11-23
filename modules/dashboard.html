@@ -1,31 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../css/terminal.css">
-</head>
+    <link rel="stylesheet" href="../assets/css/style.css"> </head>
 <body>
-    <div style="text-align: center; margin-top: 50px;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" width="120" style="filter: grayscale(100%) opacity(0.5);">
-        <h1>WELCOME BACK, OVERSEER</h1>
-        <p>CURRENT WORLD STATUS: <span class="text-alert">CHAOS (AS PLANNED)</span></p>
-    </div>
+    <div class="crt-flicker">
+        <div style="text-align: center; margin-top: 40px; border-bottom: 2px solid #333; padding-bottom: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" width="120" style="filter: grayscale(100%) opacity(0.5);">
+            <h1 style="font-size: 3em; margin-top: 10px;">WELCOME, OVERSEER</h1>
+            <p>CURRENT WORLD STATUS: <span class="text-alert" style="font-size: 1.2em">CHAOS (OPTIMAL)</span></p>
+        </div>
 
-    <div class="grid-2" style="margin-top: 40px;">
-        <div class="card">
-            <h3>NOTIFICATIONS (3)</h3>
-            <ul style="list-style: none; padding: 0; line-height: 1.8;">
-                <li>> <strong>TRUMP:</strong> Requesting permission to post meme [PENDING]</li>
-                <li>> <strong>MARKET CRASH:</strong> Scheduled for next Tuesday [READY]</li>
-                <li>> <strong>EPSTEIN:</strong> Complaining about AC in bunker [IGNORED]</li>
-            </ul>
+        <div class="grid-2" style="margin-top: 30px;">
+            <div class="card">
+                <h3>PRIORITY NOTIFICATIONS (3)</h3>
+                <ul style="list-style: none; padding: 0; line-height: 2;">
+                    <li>> <strong style="color:#fff">TRUMP:</strong> Requesting permission to post meme [PENDING]</li>
+                    <li>> <strong style="color:#fff">MARKET CRASH:</strong> Scheduled for next Tuesday [READY]</li>
+                    <li>> <strong style="color:#fff">EPSTEIN:</strong> Complaining about AC in bunker [IGNORED]</li>
+                    <li>> <strong style="color:#fff">ELON MUSK:</strong> Neuralink update 5.0 uploaded [DONE]</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h3>SYSTEM HEALTH MONITOR</h3>
+                <div style="margin-bottom: 10px;">
+                    <div>MIND CONTROL TOWERS (5G)</div>
+                    <div style="width: 100%; background: #111; height: 10px;"><div style="width: 100%; background: var(--term-green); height: 100%;"></div></div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <div>MEDIA MANIPULATION</div>
+                    <div style="width: 100%; background: #111; height: 10px;"><div style="width: 98%; background: var(--term-green); height: 100%;"></div></div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <div>SIMULATION STABILITY</div>
+                    <div style="width: 100%; background: #111; height: 10px;"><div style="width: 45%; background: orange; height: 100%;"></div></div>
+                    <div style="font-size: 10px; color: orange; text-align: right;">WARNING: GLITCHES DETECTED</div>
+                </div>
+            </div>
         </div>
-        <div class="card">
-            <h3>SYSTEM HEALTH</h3>
-            <p>Mind Control Towers: <span style="color: #00ff41">ONLINE</span></p>
-            <p>Media Manipulation: <span style="color: #00ff41">98% EFFECTIVE</span></p>
-            <p>Simulation Stability: <span style="color: orange">UNSTABLE</span></p>
+
+        <div class="card" style="text-align: center; border-color: var(--alert-red);">
+            <h3>⚠ GLOBAL ALERT ⚠</h3>
+            <p>Civilian population is beginning to suspect "The Matrix". Initiate Protocol: "TIKTOK DISTRACTION".</p>
+            <button class="btn" style="color: var(--alert-red); border-color: var(--alert-red);">EXECUTE PROTOCOL</button>
         </div>
     </div>
-    <script src="../assets/js/main.js"></script>
 </body>
 </html>
