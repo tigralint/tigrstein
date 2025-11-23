@@ -5,82 +5,201 @@
     <title>ROOT TERMINAL</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
-        body { background: #000; font-family: 'Courier New', Courier, monospace; }
-        #console { color: #00ff41; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
-        .input-line { display: flex; margin-top: 10px; }
-        .prompt { color: #00ff41; margin-right: 10px; }
+        body { background: #000; font-family: 'Courier New', Courier, monospace; overflow: hidden; display: flex; flex-direction: column; }
+        #console-container { 
+            flex-grow: 1; padding: 20px; overflow-y: auto; 
+            scrollbar-width: none; /* Firefox */
+        }
+        #console-container::-webkit-scrollbar { display: none; } /* Chrome */
+        
+        .line { color: #00ff41; font-size: 14px; line-height: 1.5; white-space: pre-wrap; margin-bottom: 5px; }
+        .line.error { color: #ff3333; }
+        .line.system { color: #888; }
+        
+        .input-line { display: flex; padding: 0 20px 20px 20px; align-items: center; }
+        .prompt { color: #00ff41; margin-right: 10px; font-weight: bold; }
         input {
-            background: transparent; border: none; color: #fff; font-family: inherit; font-size: inherit;
-            width: 100%; outline: none;
+            background: transparent; border: none; color: #fff; font-family: inherit; font-size: 14px;
+            width: 100%; outline: none; caret-color: #00ff41;
         }
     </style>
 </head>
 <body>
-    <div id="console">
-OMEGA LINUX v.9.9 [ROOT ACCESS]
-(c) 2025 DEEP STATE CORP. All rights reserved.
-
-Type 'help' for a list of commands.
+    <div id="console-container">
+        <div class="line">OMEGA LINUX v.10.4 [ROOT ACCESS]</div>
+        <div class="line">(c) 2025 DEEP STATE CORP. All rights reserved.</div>
+        <div class="line system">Scanning local drive... [OK]</div>
+        <div class="line">Type 'help' for available commands.</div>
+        <br>
     </div>
 
     <div class="input-line">
-        <span class="prompt">admin@omega:~$</span>
+        <span class="prompt" id="prompt-text">admin@omega:~$</span>
         <input type="text" id="cmd" autofocus autocomplete="off">
     </div>
 
     <script src="../assets/js/main.js"></script>
     <script>
-        const cmdInput = document.getElementById('cmd');
-        const consoleDiv = document.getElementById('console');
+        const consoleDiv = document.getElementById('console-container');
+        const input = document.getElementById('cmd');
+        const promptText = document.getElementById('prompt-text');
 
-        cmdInput.addEventListener('keydown', function(e) {
+        // Файловая система (Эмуляция)
+        const fileSystem = {
+            "~": {
+                type: "dir",
+                files: {
+                    "readme.txt": "WELCOME OVERSEER.\nThis terminal has direct access to the simulation core.\nUse with caution.",
+                    "passwords.txt": "Trump: MAGA2024\nZuck: humansauce123\nElon: X_AE_A_12",
+                    "todo_list.txt": "1. Buy Greenland\n2. Delete Tik-Tok\n3. Fix moon hologram projector",
+                    "projects": {
+                        type: "dir",
+                        files: {
+                            "project_bluebeam.pdf": "[ENCRYPTED BINARY DATA... CANNOT RENDER]",
+                            "mk_ultra_v2.log": "Subject 441 (Kanye) is showing resistance to programming."
+                        }
+                    },
+                    "bin": {
+                        type: "dir",
+                        files: {
+                            "nuke.exe": "Binary file",
+                            "money_printer.exe": "Binary file"
+                        }
+                    }
+                }
+            }
+        };
+
+        let currentPath = ["~"];
+        let currentDir = fileSystem["~"];
+
+        // Обработка ввода
+        input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                const command = this.value.toLowerCase().trim();
-                printLine(`admin@omega:~$ ${this.value}`);
-                processCommand(command);
+                const command = this.value.trim();
+                printLine(`${promptText.innerText} ${this.value}`, 'system');
+                if (command) processCommand(command);
                 this.value = '';
-                window.scrollTo(0, document.body.scrollHeight);
+                scrollToBottom();
             }
         });
 
-        function printLine(text) {
-            consoleDiv.innerHTML += `\n${text}`;
+        // Клик в любом месте ставит фокус
+        document.body.onclick = () => input.focus();
+
+        function printLine(text, type = '') {
+            const div = document.createElement('div');
+            div.className = `line ${type}`;
+            div.innerText = text;
+            consoleDiv.appendChild(div);
+            soundType(); // Звук из main.js
         }
 
-        function processCommand(cmd) {
-            soundClick();
-            
+        function scrollToBottom() {
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        function getDir(pathArray) {
+            let dir = fileSystem["~"];
+            for (let i = 1; i < pathArray.length; i++) {
+                dir = dir.files[pathArray[i]];
+            }
+            return dir;
+        }
+
+        function processCommand(cmdStr) {
+            const args = cmdStr.split(' ');
+            const cmd = args[0].toLowerCase();
+            const arg1 = args[1];
+
             switch(cmd) {
                 case 'help':
-                    printLine("AVAILABLE COMMANDS:\n - list_assets : Show active agents\n - kill_internet : Emergency shutdown\n - print_money : Infinite QE\n - nuke_mars : Target Elon's colony\n - clear : Clear screen");
+                    printLine("AVAILABLE COMMANDS:\n  ls - List files\n  cd [dir] - Change directory\n  cat [file] - Read file\n  clear - Clear screen\n  whoami - Current user\n  nuke_mars - Execute binary\n  print_money - Trigger FED API");
                     break;
-                case 'list_assets':
-                    printLine("LOADING... \n[1] Trump (Active)\n[2] Epstein (Hidden)\n[3] Zelensky (Busy)\n[4] Greta (Charging)");
+
+                case 'ls':
+                    let output = "";
+                    for (const [name, obj] of Object.entries(currentDir.files)) {
+                        if (typeof obj === 'string') output += name + "  ";
+                        else output += `[${name}]  `; // Папки в скобках
+                    }
+                    printLine(output || "(empty)");
                     break;
-                case 'kill_internet':
-                    printLine("INITIATING BLACKOUT...");
-                    setTimeout(() => printLine("ERROR: Cat videos database too large to delete."), 1000);
+
+                case 'cd':
+                    if (!arg1 || arg1 === '~') {
+                        currentPath = ["~"];
+                        currentDir = fileSystem["~"];
+                    } else if (arg1 === '..') {
+                        if (currentPath.length > 1) currentPath.pop();
+                        currentDir = getDir(currentPath);
+                    } else {
+                        if (currentDir.files[arg1] && currentDir.files[arg1].type === 'dir') {
+                            currentPath.push(arg1);
+                            currentDir = currentDir.files[arg1];
+                        } else {
+                            printLine(`cd: ${arg1}: No such directory`, 'error');
+                        }
+                    }
+                    promptText.innerText = `admin@omega:${currentPath.join('/')}$`;
                     break;
-                case 'print_money':
-                    printLine("PRINTER STARTED: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+
+                case 'cat':
+                    if (!arg1) { printLine("Usage: cat [filename]", 'error'); break; }
+                    if (currentDir.files[arg1]) {
+                        if (typeof currentDir.files[arg1] === 'string') {
+                            printLine(currentDir.files[arg1]);
+                        } else {
+                            printLine(`cat: ${arg1}: Is a directory`, 'error');
+                        }
+                    } else {
+                        printLine(`cat: ${arg1}: No such file`, 'error');
+                    }
                     break;
-                case 'nuke_mars':
-                    printLine("TARGETING MARS BASE ALPHA...");
-                    setTimeout(() => printLine("LAUNCH CANCELLED. Elon paid the subscription fee."), 1500);
-                    break;
+
                 case 'clear':
-                    consoleDiv.innerHTML = "OMEGA LINUX v.9.9 [ROOT ACCESS]";
+                    consoleDiv.innerHTML = '';
                     break;
+                
+                case 'whoami':
+                    printLine("root (THE ARCHITECT)");
+                    break;
+                
                 case 'sudo':
-                    printLine("You are already GOD. Sudo is irrelevant.");
+                    printLine("User is already GOD. Sudo is irrelevant.");
                     break;
+
+                case 'rm':
+                    if (args.includes('-rf') && args.includes('/')) {
+                        printLine("WARNING: SELF-DESTRUCT SEQUENCE INITIATED...", 'error');
+                        setTimeout(() => printLine("Just kidding. I can't let you do that, Dave.", 'system'), 2000);
+                    } else {
+                        printLine("Access Denied: Files are write-protected by CIA.", 'error');
+                    }
+                    break;
+
+                case 'nuke_mars':
+                    printLine("TARGETING MARS COLONY...");
+                    setTimeout(() => printLine("ERROR: Elon Musk paid the subscription fee. Attack cancelled.", 'error'), 1500);
+                    break;
+                
+                case 'print_money':
+                    let money = "";
+                    const interval = setInterval(() => {
+                        money += "$";
+                        printLine(money);
+                        scrollToBottom();
+                        if(money.length > 20) {
+                            clearInterval(interval);
+                            printLine("INFLATION ALERT: Bread now costs $5000.", 'error');
+                        }
+                    }, 100);
+                    break;
+
                 default:
-                    printLine(`Command '${cmd}' not found. Try 'help'.`);
+                    printLine(`Command '${cmd}' not found.`, 'error');
             }
         }
-        
-        // Фокус на инпут при клике
-        document.body.onclick = () => cmdInput.focus();
     </script>
 </body>
 </html>

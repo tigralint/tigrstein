@@ -11,7 +11,7 @@
         header {
             background: #050505; border-bottom: 1px solid var(--term-green);
             display: flex; align-items: center; padding: 0 20px; justify-content: space-between;
-            z-index: 20; box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
+            z-index: 200; box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
         }
         .logo { font-size: 22px; font-weight: bold; letter-spacing: 3px; display: flex; align-items: center; gap: 15px; color: #fff; }
         .logo img { width: 35px; height: 35px; filter: grayscale(100%); }
@@ -19,7 +19,7 @@
         .defcon { border: 1px solid var(--alert-red); color: var(--alert-red); padding: 5px 10px; font-weight: bold; animation: blink 2s infinite; }
 
         /* --- МАКЕТ (3 КОЛОНКИ) --- */
-        .layout { display: grid; grid-template-columns: 260px 1fr 300px; height: 100%; }
+        .layout { display: grid; grid-template-columns: 260px 1fr 300px; height: 100%; position: relative; }
         
         /* --- ЛЕВАЯ КОЛОНКА (МЕНЮ) --- */
         aside.left-panel {
@@ -66,11 +66,17 @@
         .log-time { color: var(--term-green); margin-right: 5px; }
         @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- ФУТЕР --- */
+        /* --- ФУТЕР (TICKER) --- */
         footer {
             background: #050505; border-top: 1px solid #333;
+            /* Footer теперь просто контейнер для тикера и инфо */
+            display: grid; grid-template-columns: 1fr 300px;
+            overflow: hidden;
+        }
+        .footer-info {
             display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-            font-size: 10px; color: #444; letter-spacing: 1px;
+            font-size: 10px; color: #444; letter-spacing: 1px; border-left: 1px solid #333;
+            background: #000; z-index: 10;
         }
 
         /* --- ФИНАЛЬНЫЙ ЭКРАН (ДРОП) --- */
@@ -95,6 +101,7 @@
     
     <header>
         <div class="logo">
+            <button class="mobile-menu-btn" onclick="toggleMenu()">☰</button>
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg">
             OMEGA // CORE
         </div>
@@ -106,7 +113,7 @@
     </header>
 
     <div class="layout">
-        <aside class="left-panel">
+        <aside class="left-panel" id="nav-panel">
             <div class="nav-category">COMMAND CENTER</div>
             <a href="modules/dashboard.html" target="screen" class="nav-btn active" onclick="select(this)">DASHBOARD</a>
             <a href="modules/map.html" target="screen" class="nav-btn" onclick="select(this)">GEO-TACTICAL GRID</a>
@@ -132,7 +139,7 @@
             </div>
         </aside>
 
-        <main>
+        <main onclick="closeMenu()">
             <iframe src="modules/dashboard.html" name="screen" id="main-frame"></iframe>
         </main>
 
@@ -143,10 +150,15 @@
     </div>
 
     <footer>
-        <div>USER: THE ARCHITECT</div>
-        <div>RAM: 128TB (QUANTUM)</div>
-        <div>UPTIME: 99.9999%</div>
-        <div>ENCRYPTION: AES-256-GCM</div>
+        <div class="news-ticker">
+            <div class="ticker-content" id="ticker-text">
+                LOADING GLOBAL NEWS FEED... // SOURCE: DEEP STATE WIRE //
+            </div>
+        </div>
+        <div class="footer-info">
+            <div id="user-display">USER: UNKNOWN</div>
+            <div>RAM: 128TB</div>
+        </div>
     </footer>
 
     <div id="sigma-overlay">
@@ -157,13 +169,29 @@
 
     <script src="assets/js/main.js"></script>
     <script>
-        // 1. Запуск фоновой музыки (с задержкой, чтобы браузер разрешил)
+        // 1. Инициализация (Алиас и музыка)
+        const userAlias = localStorage.getItem('omega_alias') || "THE ARCHITECT";
+        document.getElementById('user-display').innerText = "USER: " + userAlias;
+
         document.body.addEventListener('click', () => {
             const bg = document.getElementById('bg-music');
             if(bg.paused) { bg.volume = 0.2; bg.play(); }
         }, {once:true});
 
-        // 2. Переключение вкладок
+        addLog("SESSION ESTABLISHED FOR: " + userAlias);
+
+        // 2. Логика мобильного меню
+        function toggleMenu() {
+            const panel = document.getElementById('nav-panel');
+            panel.classList.toggle('mobile-open');
+            soundClick();
+        }
+        function closeMenu() {
+            // Закрывать меню при клике на мейнфрейм
+            document.getElementById('nav-panel').classList.remove('mobile-open');
+        }
+
+        // 3. Переключение вкладок
         function select(el) {
             // Убираем активный класс у всех
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -173,9 +201,11 @@
             soundClick();
             // Лог
             addLog("ACCESSING MODULE: " + el.innerText);
+            // Закрыть меню на мобилках
+            closeMenu();
         }
 
-        // 3. Логгер (Пишет снизу вверх, удаляет старые)
+        // 4. Логгер
         function addLog(text) {
             const logContainer = document.getElementById('system-log');
             const time = new Date().toLocaleTimeString('en-US', {hour12:false});
@@ -184,17 +214,14 @@
             entry.innerHTML = `<span class="log-time">[${time}]</span> ${text}`;
             
             logContainer.appendChild(entry);
-            
-            // Автопрокрутка вниз
             logContainer.scrollTop = logContainer.scrollHeight;
 
-            // Удаляем старые, если больше 20
             if (logContainer.children.length > 20) {
                 logContainer.removeChild(logContainer.children[0]);
             }
         }
 
-        // 4. Генератор случайных событий (для атмосферы)
+        // 5. Рандомные события и Глитчи
         setInterval(() => {
             const events = [
                 "Encrypted packet received from Antarctica", 
@@ -210,33 +237,55 @@
             ];
             const rnd = events[Math.floor(Math.random() * events.length)];
             addLog(rnd);
+
+            // Рандомный глитч с шансом 30%
+            if(Math.random() > 0.7) triggerGlitch();
+
         }, 3000);
 
-        // 5. ФИНАЛ (PROJECT SIGMA)
+        function triggerGlitch() {
+            document.body.classList.add('glitch-active');
+            soundDeny(); // Короткий звук сбоя
+            setTimeout(() => {
+                document.body.classList.remove('glitch-active');
+            }, 200 + Math.random() * 200);
+        }
+
+        // 6. Бегущая строка (Новости)
+        const news = [
+            "ELON MUSK BUYS GREENLAND FOR 2 DOGECOINS",
+            "REPTILIAN UNION DEMANDS HIGHER HEAT LAMP BUDGET",
+            "NASA ADMITS THE MOON IS MADE OF CHEESE (AND HOLLOW)",
+            "TRUMP DECLARES WAR ON 'CLOUDS' FOR BLOCKING THE SUN",
+            "5G TOWERS NOW BROADCASTING DIRECTLY INTO DREAMS",
+            "MARK ZUCKERBERG SHEDS SKIN LIVE ON AIR - STOCK PLUMMETS",
+            "SIMULATION SERVER RESTART SCHEDULED FOR TUESDAY"
+        ];
+        
+        const ticker = document.getElementById('ticker-text');
+        ticker.innerText = news.join(" +++ ") + " +++ " + news.join(" +++ "); // Дублируем для длины
+
+        // 7. ФИНАЛ (PROJECT SIGMA)
         function triggerSigma() {
             const bg = document.getElementById('bg-music');
             const drop = document.getElementById('drop-music');
             const overlay = document.getElementById('sigma-overlay');
 
-            // Вырубаем фон, врубаем дроп
             bg.pause();
             drop.currentTime = 0;
             drop.play();
             drop.volume = 1.0;
 
-            // Показываем оверлей
             overlay.style.display = 'flex';
-
-            // Лог
             addLog("!!! CRITICAL: PROJECT SIGMA ACTIVATED !!!");
 
-            // Стробоскоп (мигание фона)
+            // Стробоскоп
             const colors = ['#000', '#500', '#000', '#200', '#000'];
             let i = 0;
             setInterval(() => {
                 overlay.style.backgroundColor = colors[i];
                 i = (i + 1) % colors.length;
-            }, 235); // Под бит
+            }, 235);
         }
     </script>
 </body>

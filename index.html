@@ -5,10 +5,9 @@
     <title>US GOV // SECURE ACCESS GATEWAY</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        /* Индивидуальные стили для логина, переопределяющие общие при необходимости */
         body {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #000; overflow: hidden;
+            background: #000; overflow: hidden; height: 100vh; padding: 20px;
         }
 
         /* Анимация загрузки */
@@ -22,13 +21,14 @@
 
         /* Контейнер входа */
         .login-wrapper {
-            display: none; /* Скрыт до конца загрузки */
-            width: 450px;
+            display: none;
+            width: 100%; max-width: 450px;
             border: 1px solid #333;
             background: rgba(10, 15, 30, 0.95);
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 65, 0.1);
             padding: 40px; text-align: center;
             position: relative;
+            box-sizing: border-box;
         }
         
         .seal {
@@ -50,6 +50,7 @@
             padding: 15px; font-family: 'Share Tech Mono', monospace; font-size: 18px;
             text-align: center; margin-bottom: 20px; letter-spacing: 5px;
             transition: 0.3s; outline: none; box-sizing: border-box;
+            text-transform: uppercase;
         }
         input:focus { border-color: var(--term-green); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2); }
 
@@ -79,7 +80,7 @@
         Initiating Trace Program... <span id="percent">0%</span>
     </div>
 
-    <div class="login-wrapper" id="login-screen">
+    <div class="login-wrapper" id="login-step-1">
         <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="seal">
         <h2>CIA // OMEGA CLEARANCE</h2>
         
@@ -91,12 +92,25 @@
         </div>
 
         <input type="password" id="pwd" placeholder="ACCESS CODE" autocomplete="off">
-        <button onclick="login()">VERIFY CREDENTIALS</button>
+        <button onclick="checkPassword()">VERIFY CREDENTIALS</button>
 
         <div class="meta-info">
             <span>IP: <span id="ip">Fetching...</span></span>
             <span>ENC: AES-256-GCM</span>
         </div>
+    </div>
+
+    <div class="login-wrapper" id="login-step-2">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="seal">
+        <h2>IDENTITY CONFIRMATION</h2>
+        <p style="color: #666; margin-bottom: 20px;">BIOMETRIC SCAN COMPLETE.</p>
+        
+        <div style="margin-bottom: 20px; font-size: 14px; color: var(--term-green)">
+            WELCOME BACK, HANDLER. CONFIRM YOUR CODENAME FOR SESSION LOGS.
+        </div>
+
+        <input type="text" id="alias" placeholder="ENTER CODENAME" autocomplete="off" maxlength="15">
+        <button onclick="finalizeLogin()">ENTER MAINFRAME</button>
     </div>
 
     <script src="assets/js/main.js"></script>
@@ -115,7 +129,7 @@
                 clearInterval(timer);
                 setTimeout(() => {
                     boot.style.display = 'none';
-                    document.getElementById('login-screen').style.display = 'block';
+                    document.getElementById('login-step-1').style.display = 'block';
                     document.getElementById('pwd').focus();
                 }, 500);
             }
@@ -124,24 +138,28 @@
         // 2. Фейковый IP
         document.getElementById('ip').innerText = (Math.random()*255).toFixed(0) + '.14.88.' + (Math.random()*255).toFixed(0);
 
-        // 3. Логика входа
-        const input = document.getElementById('pwd');
-        input.addEventListener("keypress", (e) => { if (e.key === "Enter") login(); });
+        // 3. Обработка Enter
+        document.getElementById('pwd').addEventListener("keypress", (e) => { if (e.key === "Enter") checkPassword(); });
+        document.getElementById('alias').addEventListener("keypress", (e) => { if (e.key === "Enter") finalizeLogin(); });
 
-        function login() {
+        // 4. Проверка пароля
+        function checkPassword() {
+            const input = document.getElementById('pwd');
+            const btn = document.querySelector('#login-step-1 button');
             const pass = input.value.toUpperCase();
-            const btn = document.querySelector('button');
 
             // ПАРОЛЬ: MAN или 1488
             if (pass === 'MAN' || pass === '1488') {
                 soundClick();
-                btn.innerText = "ACCESS GRANTED. WELCOME, HANDLER.";
+                btn.innerText = "ACCESS GRANTED.";
                 btn.style.background = "#00ff41";
                 btn.style.color = "#000";
                 
                 setTimeout(() => {
-                    window.location.href = "mainframe.html";
-                }, 1500);
+                    document.getElementById('login-step-1').style.display = 'none';
+                    document.getElementById('login-step-2').style.display = 'block';
+                    document.getElementById('alias').focus();
+                }, 1000);
             } else {
                 soundDeny();
                 btn.innerText = "ACCESS DENIED // TRACE STARTED";
@@ -160,6 +178,18 @@
                     input.focus();
                 }, 2000);
             }
+        }
+
+        // 5. Финализация (Сохранение алиаса)
+        function finalizeLogin() {
+            const aliasInput = document.getElementById('alias');
+            let alias = aliasInput.value.toUpperCase().trim();
+            if(!alias) alias = "UNKNOWN HANDLER";
+
+            localStorage.setItem('omega_alias', alias);
+            soundClick();
+            
+            window.location.href = "mainframe.html";
         }
     </script>
 </body>

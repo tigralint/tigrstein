@@ -5,18 +5,19 @@
     <title>GEO-TACTICAL GRID</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
-        body { overflow: hidden; }
+        body { overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
         
         /* Контейнер карты */
         .map-container {
             position: relative;
-            width: 100%;
-            height: 60vh;
+            flex-grow: 1;
             background: #050505 url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg') no-repeat center center;
             background-size: contain;
             border: 1px solid #333;
             box-shadow: inset 0 0 50px #000;
-            filter: invert(1) hue-rotate(180deg) contrast(1.5); /* Делаем карту "хакерской" */
+            filter: invert(1) hue-rotate(180deg) contrast(1.5);
+            overflow: hidden;
+            transition: 1s filter;
         }
 
         /* Точки агентов */
@@ -26,9 +27,6 @@
             cursor: pointer; box-shadow: 0 0 10px var(--alert-red);
             animation: pulse 1.5s infinite;
         }
-        .dot:hover { transform: scale(1.5); background: #fff; }
-        
-        /* Подписи к точкам */
         .dot::after {
             content: attr(data-info);
             position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
@@ -44,22 +42,38 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 51, 51, 0); }
         }
 
+        /* Самолетики (для химтрейлов) */
+        .plane {
+            position: absolute; font-size: 20px; color: #fff;
+            transition: transform 5s linear;
+        }
+        .trail {
+            position: absolute; height: 2px; background: rgba(255,255,255,0.5);
+            transform-origin: left center; pointer-events: none;
+        }
+
         /* Панель управления */
         .control-panel {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 20px;
+            background: #020202; border-top: 1px solid #333;
+            height: 80px;
         }
         
         .action-btn {
-            background: #111; border: 1px solid #333; color: #888; padding: 15px;
+            background: #111; border: 1px solid #333; color: #888; padding: 10px;
             cursor: pointer; text-transform: uppercase; font-family: inherit; transition: 0.3s;
+            font-size: 11px; font-weight: bold;
         }
         .action-btn:hover { border-color: var(--alert-red); color: var(--alert-red); }
-        .action-btn.active { background: var(--alert-red); color: #000; font-weight: bold; }
+        .action-btn:active { transform: scale(0.95); }
 
     </style>
 </head>
 <body>
-    <h2 style="color: var(--alert-red)">GLOBAL CONFLICT MONITOR</h2>
+    <div style="padding: 10px; border-bottom: 1px solid #333;">
+        <h2 style="margin: 0; font-size: 18px;">GLOBAL CONFLICT MONITOR</h2>
+        <div id="log-display" style="color: var(--term-green); font-size: 12px; margin-top: 5px;">STATUS: MONITORING...</div>
+    </div>
     
     <div class="map-container" id="map">
         <div class="dot" style="top: 35%; left: 22%;" data-info="AGENT ORANGE (USA)"></div>
@@ -70,41 +84,100 @@
     </div>
 
     <div class="control-panel">
-        <button class="action-btn" onclick="triggerEvent(this, 'CHEMTRAILS')">DEPLOY CHEMTRAILS</button>
-        <button class="action-btn" onclick="triggerEvent(this, 'WEATHER')">RESET WEATHER</button>
-        <button class="action-btn" onclick="triggerEvent(this, 'INTERNET')">KILL INTERNET</button>
-        <button class="action-btn" onclick="triggerEvent(this, 'PANDEMIC')" style="border-color: var(--alert-red); color: var(--alert-red)">!!! PANDEMIC 2.0 !!!</button>
+        <button class="action-btn" onclick="deployChemtrails()">DEPLOY CHEMTRAILS</button>
+        <button class="action-btn" onclick="resetWeather()">CLEAR SKIES</button>
+        <button class="action-btn" onclick="killInternet()">KILL INTERNET</button>
+        <button class="action-btn" onclick="triggerPandemic()" style="border-color: var(--alert-red); color: var(--alert-red)">!!! PANDEMIC 2.0 !!!</button>
     </div>
-
-    <div id="log-display" style="margin-top: 10px; color: var(--term-green); font-size: 12px;">AWAITING COMMAND...</div>
 
     <script src="../assets/js/main.js"></script>
     <script>
-        function triggerEvent(btn, type) {
-            const log = document.getElementById('log-display');
-            
-            // Анимация кнопки
-            btn.classList.add('active');
-            setTimeout(() => btn.classList.remove('active'), 500);
+        const map = document.getElementById('map');
+        const log = document.getElementById('log-display');
 
-            // Звук
+        function logMsg(msg) {
+            log.innerHTML = `> ${msg}`;
+            soundType();
+        }
+
+        // 1. ХИМТРЕЙЛЫ
+        function deployChemtrails() {
+            logMsg("DISPERSING ALUMINUM PARTICLES...");
             soundClick();
-
-            // Логика событий
-            if(type === 'PANDEMIC') {
-                document.body.style.animation = "shake 0.5s infinite"; // Тряска экрана
-                log.innerHTML = "<span class='text-alert'>CRITICAL ALERT: RELEASING PATHOGEN... 10%... 50%...</span>";
-                setTimeout(() => {
-                    document.body.style.animation = "none";
-                    log.innerHTML = "ERROR: SUBJECTS REFUSE TO WEAR MASKS. ABORTING.";
-                    soundDeny();
-                }, 3000);
-            } else if (type === 'INTERNET') {
-                document.getElementById('map').style.filter = "grayscale(100%) brightness(0.2)";
-                log.innerHTML = "SHUTTING DOWN WORLD WIDE WEB... [DONE]";
-            } else {
-                log.innerHTML = `EXECUTING PROTOCOL: ${type}... SUCCESS.`;
+            
+            for(let i=0; i<5; i++) {
+                spawnPlane();
             }
+        }
+
+        function spawnPlane() {
+            const plane = document.createElement('div');
+            plane.innerText = "✈";
+            plane.className = "plane";
+            
+            // Старт (случайная точка слева)
+            const startY = Math.random() * 80 + 10;
+            plane.style.left = "-50px";
+            plane.style.top = startY + "%";
+            
+            map.appendChild(plane);
+
+            // Анимация полета
+            // Используем setTimeout чтобы CSS transition сработал
+            setTimeout(() => {
+                plane.style.transform = `translateX(${window.innerWidth + 100}px)`;
+                
+                // Рисуем след (полосу)
+                const trail = document.createElement('div');
+                trail.className = 'trail';
+                trail.style.top = (startY + 1) + "%";
+                trail.style.left = "0";
+                trail.style.width = "0%";
+                map.appendChild(trail);
+
+                // След растет вместе с самолетом
+                trail.style.transition = "width 5s linear";
+                setTimeout(() => trail.style.width = "100%", 100);
+                
+                // Удаление
+                setTimeout(() => { plane.remove(); trail.remove(); }, 6000);
+            }, 100);
+        }
+
+        // 2. СБРОС
+        function resetWeather() {
+            logMsg("WEATHER CONTROL: RESETTING TO DEFAULT...");
+            document.querySelectorAll('.plane, .trail').forEach(el => el.remove());
+            map.style.filter = "invert(1) hue-rotate(180deg) contrast(1.5)";
+        }
+
+        // 3. KILL INTERNET
+        function killInternet() {
+            logMsg("SHUTTING DOWN DNS ROOT SERVERS...");
+            map.style.filter = "grayscale(100%) brightness(0.1)";
+            
+            const warning = document.createElement('div');
+            warning.innerText = "CONNECTION LOST";
+            warning.style.cssText = "position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: red; font-size: 40px; border: 5px solid red; padding: 20px; font-weight: bold; transform: rotate(-10deg);";
+            warning.id = "offline-msg";
+            map.appendChild(warning);
+            
+            soundDeny();
+        }
+
+        // 4. ПАНДЕМИЯ
+        function triggerPandemic() {
+            logMsg("RELEASING PATHOGEN IN MAJOR CITIES...");
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.style.transform = "scale(5)";
+                dot.style.background = "yellow";
+                dot.style.boxShadow = "0 0 50px yellow";
+                dot.style.transition = "1s";
+            });
+            
+            setTimeout(() => {
+                logMsg("ERROR: POPULATION IMMUNITY TOO HIGH. DEPLOYING 5G BOOST...");
+            }, 2000);
         }
     </script>
 </body>
