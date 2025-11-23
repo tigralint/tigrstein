@@ -2,122 +2,165 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US GOV // AUTHORIZED ACCESS ONLY</title>
+    <title>US GOV // SECURE ACCESS GATEWAY</title>
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        /* Индивидуальные стили для логина, переопределяющие общие при необходимости */
         body {
-            background-color: #0a0e17;
-            color: #aab2c0;
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #000; overflow: hidden;
         }
-        .login-container {
+
+        /* Анимация загрузки */
+        #boot-sequence {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; color: var(--term-green);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 20px; z-index: 9999;
+            font-size: 14px; line-height: 1.5;
+        }
+
+        /* Контейнер входа */
+        .login-wrapper {
+            display: none; /* Скрыт до конца загрузки */
             width: 450px;
-            background: #111625;
-            border: 1px solid #2a3b55;
-            padding: 40px;
-            box-shadow: 0 0 60px rgba(0,0,0,0.8);
-            text-align: center;
+            border: 1px solid #333;
+            background: rgba(10, 15, 30, 0.95);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 65, 0.1);
+            padding: 40px; text-align: center;
             position: relative;
         }
+        
         .seal {
-            width: 120px; height: 120px;
-            background: url('https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg') no-repeat center/contain;
-            margin: 0 auto 20px;
-            filter: grayscale(100%) opacity(0.8);
+            width: 100px; margin-bottom: 20px;
+            filter: grayscale(100%) drop-shadow(0 0 5px var(--term-green));
+            opacity: 0.8;
         }
-        h1 { font-size: 18px; color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 5px; }
-        h2 { font-size: 12px; color: #5e6d82; letter-spacing: 1px; margin-bottom: 30px; border-bottom: 1px solid #2a3b55; padding-bottom: 20px; }
-        
-        .warning-box {
-            background: rgba(178, 34, 34, 0.1);
-            border-left: 3px solid #B22222;
-            color: #B22222; font-size: 11px; text-align: left; padding: 15px; margin-bottom: 20px; line-height: 1.4;
+
+        .warning-banner {
+            background: rgba(255, 50, 50, 0.1);
+            border: 1px solid var(--alert-red);
+            color: var(--alert-red);
+            font-size: 10px; text-align: left; padding: 10px;
+            margin: 20px 0; line-height: 1.4;
         }
-        
+
         input {
-            width: 100%; background: #0d121f; border: 1px solid #2a3b55; color: #fff;
-            padding: 15px; font-family: monospace; font-size: 16px; box-sizing: border-box; margin-bottom: 20px; text-align: center; letter-spacing: 5px;
+            width: 100%; background: #050505; border: 1px solid #444; color: #fff;
+            padding: 15px; font-family: 'Share Tech Mono', monospace; font-size: 18px;
+            text-align: center; margin-bottom: 20px; letter-spacing: 5px;
+            transition: 0.3s; outline: none; box-sizing: border-box;
         }
-        input:focus { outline: none; border-color: #4a90e2; box-shadow: 0 0 10px rgba(74, 144, 226, 0.2); }
-        
+        input:focus { border-color: var(--term-green); box-shadow: 0 0 15px rgba(0, 255, 65, 0.2); }
+
         button {
-            width: 100%; background: #2a3b55; color: #fff; border: none; padding: 15px;
-            cursor: pointer; text-transform: uppercase; font-weight: bold; letter-spacing: 2px; transition: 0.3s;
+            width: 100%; padding: 15px; background: #002200; color: var(--term-green);
+            border: 1px solid var(--term-green); cursor: pointer;
+            text-transform: uppercase; font-weight: bold; letter-spacing: 2px;
+            transition: 0.3s; font-family: 'Share Tech Mono', monospace;
         }
-        button:hover { background: #4a90e2; box-shadow: 0 0 15px #4a90e2; }
-        
-        .footer-text { margin-top: 30px; font-size: 9px; color: #444; text-transform: uppercase; }
+        button:hover { background: var(--term-green); color: #000; box-shadow: 0 0 20px var(--term-green); }
+
+        .meta-info {
+            margin-top: 30px; font-size: 10px; color: #444;
+            display: flex; justify-content: space-between;
+        }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="seal"></div>
-        <h1>Central Intelligence Agency</h1>
-        <h2>OMEGA CLEARANCE GATEWAY [V. 9.9]</h2>
 
-        <div class="warning-box">
-            <strong>FATAL WARNING:</strong> You are accessing a Level 10 Classified System. 
-            Biometric scanning is active. Unauthorized access attempts will result in immediate termination of the subject.
+    <div id="boot-sequence">
+        Initializing secure connection...<br>
+        Loading kernel modules... [OK]<br>
+        Bypassing Langley Firewalls... [OK]<br>
+        Connecting to Shadow Node (DC_04)... [OK]<br>
+        Verifying Biometric Hash...<br>
+        <span style="color: var(--alert-red)">WARNING: UNAUTHORIZED ACCESS DETECTED.</span><br>
+        Initiating Trace Program... <span id="percent">0%</span>
+    </div>
+
+    <div class="login-wrapper" id="login-screen">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg" class="seal">
+        <h2>CIA // OMEGA CLEARANCE</h2>
+        
+        <div class="warning-banner">
+            <strong>RESTRICTED ACCESS:</strong> You are accessing a U.S. Government Information System. 
+            Unauthorized access is a federal crime punishable by life imprisonment under the Espionage Act of 1917.
+            <br><br>
+            ALL ACTIVITY IS LOGGED.
         </div>
 
-        <input type="password" id="password" placeholder="___" maxlength="10">
-        <button onclick="checkLogin()">VERIFY CLEARANCE</button>
+        <input type="password" id="pwd" placeholder="ACCESS CODE" autocomplete="off">
+        <button onclick="login()">VERIFY CREDENTIALS</button>
 
-        <div class="footer-text">
-            IP: <span id="ip">LOADING...</span> | LOC: <span id="loc">LANGLEY, VA</span> | ENCRYPTION: AES-256
+        <div class="meta-info">
+            <span>IP: <span id="ip">Fetching...</span></span>
+            <span>ENC: AES-256-GCM</span>
         </div>
     </div>
 
+    <script src="assets/js/main.js"></script>
     <script>
+        // 1. Логика экрана загрузки
+        const boot = document.getElementById('boot-sequence');
+        const percent = document.getElementById('percent');
+        let p = 0;
+        
+        const timer = setInterval(() => {
+            p += Math.floor(Math.random() * 5);
+            if(p > 100) p = 100;
+            percent.innerText = p + "%";
+            
+            if(p === 100) {
+                clearInterval(timer);
+                setTimeout(() => {
+                    boot.style.display = 'none';
+                    document.getElementById('login-screen').style.display = 'block';
+                    document.getElementById('pwd').focus();
+                }, 500);
+            }
+        }, 50);
+
+        // 2. Фейковый IP
         document.getElementById('ip').innerText = (Math.random()*255).toFixed(0) + '.14.88.' + (Math.random()*255).toFixed(0);
 
-        const input = document.getElementById('password');
-        
-        // Проверка по Enter
-        input.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                checkLogin();
-            }
-        });
+        // 3. Логика входа
+        const input = document.getElementById('pwd');
+        input.addEventListener("keypress", (e) => { if (e.key === "Enter") login(); });
 
-        function checkLogin() {
+        function login() {
             const pass = input.value.toUpperCase();
             const btn = document.querySelector('button');
 
             // ПАРОЛЬ: MAN или 1488
             if (pass === 'MAN' || pass === '1488') {
+                soundClick();
                 btn.innerText = "ACCESS GRANTED. WELCOME, HANDLER.";
-                btn.style.background = "#28a745";
-                btn.style.boxShadow = "0 0 20px #28a745";
+                btn.style.background = "#00ff41";
+                btn.style.color = "#000";
                 
-                // Звуковой эффект можно добавить сюда, но браузер может блокировать
                 setTimeout(() => {
                     window.location.href = "mainframe.html";
                 }, 1500);
             } else {
-                btn.innerText = "ACCESS DENIED // TRACE INITIATED";
-                btn.style.background = "#B22222";
+                soundDeny();
+                btn.innerText = "ACCESS DENIED // TRACE STARTED";
+                btn.style.background = "#ff3333";
+                btn.style.color = "#fff";
+                btn.style.borderColor = "#ff3333";
                 input.value = "";
-                input.placeholder = "LOCKED";
                 input.disabled = true;
                 
                 setTimeout(() => {
-                    btn.innerText = "VERIFY CLEARANCE";
-                    btn.style.background = "#2a3b55";
-                    input.placeholder = "TRY AGAIN";
+                    btn.innerText = "VERIFY CREDENTIALS";
+                    btn.style.background = "#002200";
+                    btn.style.color = "#00ff41";
+                    btn.style.borderColor = "#00ff41";
                     input.disabled = false;
                     input.focus();
                 }, 2000);
             }
         }
     </script>
-    <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -3,45 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>OMEGA OS // ADMINISTRATOR</title>
-    <link rel="stylesheet" href="assets/css/style.css"> <style>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
         body { padding: 0; height: 100vh; display: grid; grid-template-rows: 60px 1fr 30px; overflow: hidden; }
         
-        /* ШАПКА */
+        /* --- ШАПКА --- */
         header {
             background: #050505; border-bottom: 1px solid var(--term-green);
-            display: flex; align-items: center; padding: 0 30px; justify-content: space-between;
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between;
             z-index: 20; box-shadow: 0 0 15px rgba(0, 255, 65, 0.1);
         }
-        .logo { font-size: 24px; font-weight: bold; letter-spacing: 3px; display: flex; align-items: center; gap: 15px; }
-        .logo img { width: 40px; height: 40px; filter: grayscale(100%); }
+        .logo { font-size: 22px; font-weight: bold; letter-spacing: 3px; display: flex; align-items: center; gap: 15px; color: #fff; }
+        .logo img { width: 35px; height: 35px; filter: grayscale(100%); }
+        .header-right { display: flex; gap: 20px; font-size: 12px; align-items: center; }
+        .defcon { border: 1px solid var(--alert-red); color: var(--alert-red); padding: 5px 10px; font-weight: bold; animation: blink 2s infinite; }
+
+        /* --- МАКЕТ (3 КОЛОНКИ) --- */
+        .layout { display: grid; grid-template-columns: 260px 1fr 300px; height: 100%; }
         
-        /* СЕТКА */
-        .layout { display: grid; grid-template-columns: 280px 1fr 300px; height: 100%; }
-        
-        /* САЙДБАР (МЕНЮ) */
+        /* --- ЛЕВАЯ КОЛОНКА (МЕНЮ) --- */
         aside.left-panel {
-            background: #020202; border-right: 1px solid #333; padding: 20px;
-            display: flex; flex-direction: column; gap: 5px;
-            overflow-y: auto;
+            background: #020202; border-right: 1px solid #333; padding: 10px;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
         
         .nav-category { 
-            color: #666; font-size: 11px; letter-spacing: 2px; margin: 20px 0 10px 0; 
-            font-weight: bold; border-bottom: 1px solid #222; padding-bottom: 5px; 
+            color: #666; font-size: 10px; letter-spacing: 2px; margin: 15px 0 5px 10px; 
+            font-weight: bold;
         }
         
         .nav-btn {
-            display: flex; align-items: center; padding: 12px 15px; text-decoration: none; color: #888;
-            border-left: 3px solid transparent; transition: 0.2s; font-size: 14px; cursor: pointer;
-            background: rgba(255,255,255,0.02); margin-bottom: 5px;
+            display: flex; align-items: center; padding: 10px 15px; text-decoration: none; color: #888;
+            border-left: 2px solid transparent; transition: 0.2s; font-size: 13px; cursor: pointer;
+            margin-bottom: 2px;
         }
         .nav-btn:hover { background: #111; color: #fff; padding-left: 20px; }
         .nav-btn.active {
             background: rgba(0, 255, 65, 0.05); color: #fff; border-left-color: var(--term-green);
-            text-shadow: 0 0 8px var(--term-green);
+            text-shadow: 0 0 5px var(--term-green);
         }
         
-        /* ЭКРАН (IFRAME) */
+        /* --- ЦЕНТР (IFRAME) --- */
         main { position: relative; background: #000; overflow: hidden; }
         iframe {
             width: 100%; height: 100%; border: none;
@@ -49,55 +51,84 @@
             background-size: 10px 10px; background-position: 0 0, 5px 5px;
         }
 
-        /* ПРАВАЯ ПАНЕЛЬ (ЛОГИ) */
+        /* --- ПРАВАЯ КОЛОНКА (ЛОГИ) --- */
         aside.right-panel {
             background: #030303; border-left: 1px solid #333; padding: 15px;
-            font-size: 12px; color: #555; font-family: 'Share Tech Mono', monospace;
+            font-size: 11px; color: #555; font-family: 'Share Tech Mono', monospace;
             display: flex; flex-direction: column;
         }
         .log-header { color: #fff; border-bottom: 1px solid #333; margin-bottom: 10px; padding-bottom: 5px; }
-        #system-log { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column-reverse; } /* Новые логи сверху */
-        .log-entry { margin-bottom: 6px; border-bottom: 1px dashed #111; padding-bottom: 2px; }
-        .log-time { color: var(--term-green); margin-right: 8px; }
+        #system-log { 
+            flex-grow: 1; overflow-y: hidden; /* Скрываем скроллбар */
+            display: flex; flex-direction: column; justify-content: flex-end; /* Новые снизу */
+        }
+        .log-entry { margin-bottom: 5px; border-bottom: 1px dashed #111; padding-bottom: 2px; animation: fadeSlide 0.3s ease-out; }
+        .log-time { color: var(--term-green); margin-right: 5px; }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ФУТЕР */
+        /* --- ФУТЕР --- */
         footer {
             background: #050505; border-top: 1px solid #333;
             display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-            font-size: 11px; color: #444;
+            font-size: 10px; color: #444; letter-spacing: 1px;
         }
+
+        /* --- ФИНАЛЬНЫЙ ЭКРАН (ДРОП) --- */
+        #sigma-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+        }
+        .sigma-photo {
+            width: 500px; border: 10px solid #fff;
+            filter: grayscale(100%) contrast(120%);
+            animation: pump 0.46s infinite alternate;
+        }
+        .sigma-title { font-size: 100px; color: #fff; font-weight: bold; margin-top: 20px; text-transform: uppercase; line-height: 0.8; }
+        .sigma-sub { font-size: 40px; color: var(--alert-red); letter-spacing: 15px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <audio id="bg-music" loop src="audio/placing_the_blame_intro.mp3"></audio>
+    <audio id="drop-music" src="audio/are_you_man_enough_drop.mp3"></audio>
     
     <header>
         <div class="logo">
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/25/Seal_of_the_Central_Intelligence_Agency.svg">
             OMEGA // CORE
         </div>
-        <div class="text-alert">⚠ VPN: ENCRYPTED (NODE: LANGLEY_DC_01)</div>
+        <div class="header-right">
+            <div class="defcon">DEFCON: 2</div>
+            <div>SERVER: LANGLEY_DC_01</div>
+            <div class="text-alert">● LIVE</div>
+        </div>
     </header>
 
     <div class="layout">
         <aside class="left-panel">
             <div class="nav-category">COMMAND CENTER</div>
-            <a href="modules/dashboard.html" target="screen" class="nav-btn active" onclick="select(this)">DASHBOARD VIEW</a>
+            <a href="modules/dashboard.html" target="screen" class="nav-btn active" onclick="select(this)">DASHBOARD</a>
+            <a href="modules/map.html" target="screen" class="nav-btn" onclick="select(this)">GEO-TACTICAL GRID</a>
+            <a href="modules/terminal.html" target="screen" class="nav-btn" onclick="select(this)">ROOT TERMINAL</a>
             
             <div class="nav-category">DATABASE (CLASSIFIED)</div>
             <a href="modules/targets.html" target="screen" class="nav-btn" onclick="select(this)">TARGET PROFILES</a>
+            <a href="modules/clones.html" target="screen" class="nav-btn" onclick="select(this)">CLONE MANAGER</a>
             <a href="modules/flight_logs.html" target="screen" class="nav-btn" onclick="select(this)">FLIGHT_LOGS.XLS</a>
-            <a href="modules/timeline.html" target="screen" class="nav-btn" onclick="select(this)">WORLD_HISTORY_EDIT</a>
+            <a href="modules/timeline.html" target="screen" class="nav-btn" onclick="select(this)">HISTORY_EDIT.EXE</a>
             
             <div class="nav-category">SURVEILLANCE</div>
+            <a href="modules/cctv.html" target="screen" class="nav-btn" onclick="select(this)">CCTV FEED (LIVE)</a>
             <a href="modules/intercepts.html" target="screen" class="nav-btn" onclick="select(this)">AUDIO INTERCEPTS</a>
             <a href="modules/evidence.html" target="screen" class="nav-btn" onclick="select(this)">PHYSICAL EVIDENCE</a>
             <a href="modules/finance.html" target="screen" class="nav-btn" onclick="select(this)">SHADOW FINANCE</a>
 
             <div style="flex-grow: 1"></div>
-            <div style="border-top: 1px solid #333; padding-top: 15px;">
-                <a href="modules/sigma.html" target="screen" class="nav-btn" style="color: var(--alert-red); border-color: var(--alert-red); font-weight: bold;" onclick="select(this)">!!! PROJECT_SIGMA !!!</a>
+            <div style="border-top: 1px solid #333; padding-top: 15px; margin-top: 10px;">
+                <a href="javascript:void(0)" class="nav-btn" style="color: var(--alert-red); border: 1px solid var(--alert-red); justify-content: center; font-weight: bold;" onclick="triggerSigma()">
+                    ⚠ PROJECT SIGMA
+                </a>
             </div>
         </aside>
 
@@ -106,41 +137,64 @@
         </main>
 
         <aside class="right-panel">
-            <div class="log-header">SYSTEM ACTIVITY LOG</div>
-            <div id="system-log">
-                </div>
+            <div class="log-header">ACTIVITY LOG (REAL-TIME)</div>
+            <div id="system-log"></div>
         </aside>
     </div>
 
     <footer>
-        <div>SERVER: DEEP_STATE_MAIN_09</div>
+        <div>USER: THE ARCHITECT</div>
+        <div>RAM: 128TB (QUANTUM)</div>
         <div>UPTIME: 99.9999%</div>
-        <div>ENCRYPTION: MILITARY GRADE (AES-256)</div>
+        <div>ENCRYPTION: AES-256-GCM</div>
     </footer>
 
+    <div id="sigma-overlay">
+        <img src="assets/img/YOU_SIGMA.jpg" class="sigma-photo" alt="THE BOSS">
+        <div class="sigma-title">IT WAS ME</div>
+        <div class="sigma-sub">ALL ALONG</div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
     <script>
-        // Запуск музыки при первом клике
+        // 1. Запуск фоновой музыки (с задержкой, чтобы браузер разрешил)
         document.body.addEventListener('click', () => {
             const bg = document.getElementById('bg-music');
-            if(bg.paused) { bg.volume = 0.3; bg.play(); }
+            if(bg.paused) { bg.volume = 0.2; bg.play(); }
         }, {once:true});
 
-        // Подсветка кнопок
+        // 2. Переключение вкладок
         function select(el) {
+            // Убираем активный класс у всех
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            // Добавляем нажатой
             el.classList.add('active');
+            // Звук
+            soundClick();
+            // Лог
             addLog("ACCESSING MODULE: " + el.innerText);
         }
 
-        // Генератор логов
+        // 3. Логгер (Пишет снизу вверх, удаляет старые)
         function addLog(text) {
             const logContainer = document.getElementById('system-log');
             const time = new Date().toLocaleTimeString('en-US', {hour12:false});
-            const entry = `<div class="log-entry"><span class="log-time">[${time}]</span> ${text}</div>`;
-            logContainer.insertAdjacentHTML('afterbegin', entry);
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${text}`;
+            
+            logContainer.appendChild(entry);
+            
+            // Автопрокрутка вниз
+            logContainer.scrollTop = logContainer.scrollHeight;
+
+            // Удаляем старые, если больше 20
+            if (logContainer.children.length > 20) {
+                logContainer.removeChild(logContainer.children[0]);
+            }
         }
 
-        // Фейковые события для атмосферы
+        // 4. Генератор случайных событий (для атмосферы)
         setInterval(() => {
             const events = [
                 "Encrypted packet received from Antarctica", 
@@ -150,12 +204,40 @@
                 "Financial transaction verified: $50B moved", 
                 "Asset 'Trump' uploaded new Truth Social post",
                 "Satellite realignment complete",
-                "Suppressing unauthorized leak in Reddit"
+                "Suppressing unauthorized leak in Reddit",
+                "Zuckerberg thermal regulation: NORMAL",
+                "Scanning global frequencies..."
             ];
             const rnd = events[Math.floor(Math.random() * events.length)];
             addLog(rnd);
-        }, 3500);
+        }, 3000);
+
+        // 5. ФИНАЛ (PROJECT SIGMA)
+        function triggerSigma() {
+            const bg = document.getElementById('bg-music');
+            const drop = document.getElementById('drop-music');
+            const overlay = document.getElementById('sigma-overlay');
+
+            // Вырубаем фон, врубаем дроп
+            bg.pause();
+            drop.currentTime = 0;
+            drop.play();
+            drop.volume = 1.0;
+
+            // Показываем оверлей
+            overlay.style.display = 'flex';
+
+            // Лог
+            addLog("!!! CRITICAL: PROJECT SIGMA ACTIVATED !!!");
+
+            // Стробоскоп (мигание фона)
+            const colors = ['#000', '#500', '#000', '#200', '#000'];
+            let i = 0;
+            setInterval(() => {
+                overlay.style.backgroundColor = colors[i];
+                i = (i + 1) % colors.length;
+            }, 235); // Под бит
+        }
     </script>
-    <script src="assets/js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ROOT TERMINAL</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        body { background: #000; font-family: 'Courier New', Courier, monospace; }
+        #console { color: #00ff41; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+        .input-line { display: flex; margin-top: 10px; }
+        .prompt { color: #00ff41; margin-right: 10px; }
+        input {
+            background: transparent; border: none; color: #fff; font-family: inherit; font-size: inherit;
+            width: 100%; outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="console">
+OMEGA LINUX v.9.9 [ROOT ACCESS]
+(c) 2025 DEEP STATE CORP. All rights reserved.
+
+Type 'help' for a list of commands.
+    </div>
+
+    <div class="input-line">
+        <span class="prompt">admin@omega:~$</span>
+        <input type="text" id="cmd" autofocus autocomplete="off">
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+    <script>
+        const cmdInput = document.getElementById('cmd');
+        const consoleDiv = document.getElementById('console');
+
+        cmdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.toLowerCase().trim();
+                printLine(`admin@omega:~$ ${this.value}`);
+                processCommand(command);
+                this.value = '';
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+
+        function printLine(text) {
+            consoleDiv.innerHTML += `\n${text}`;
+        }
+
+        function processCommand(cmd) {
+            soundClick();
+            
+            switch(cmd) {
+                case 'help':
+                    printLine("AVAILABLE COMMANDS:\n - list_assets : Show active agents\n - kill_internet : Emergency shutdown\n - print_money : Infinite QE\n - nuke_mars : Target Elon's colony\n - clear : Clear screen");
+                    break;
+                case 'list_assets':
+                    printLine("LOADING... \n[1] Trump (Active)\n[2] Epstein (Hidden)\n[3] Zelensky (Busy)\n[4] Greta (Charging)");
+                    break;
+                case 'kill_internet':
+                    printLine("INITIATING BLACKOUT...");
+                    setTimeout(() => printLine("ERROR: Cat videos database too large to delete."), 1000);
+                    break;
+                case 'print_money':
+                    printLine("PRINTER STARTED: $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+                    break;
+                case 'nuke_mars':
+                    printLine("TARGETING MARS BASE ALPHA...");
+                    setTimeout(() => printLine("LAUNCH CANCELLED. Elon paid the subscription fee."), 1500);
+                    break;
+                case 'clear':
+                    consoleDiv.innerHTML = "OMEGA LINUX v.9.9 [ROOT ACCESS]";
+                    break;
+                case 'sudo':
+                    printLine("You are already GOD. Sudo is irrelevant.");
+                    break;
+                default:
+                    printLine(`Command '${cmd}' not found. Try 'help'.`);
+            }
+        }
+        
+        // Фокус на инпут при клике
+        document.body.onclick = () => cmdInput.focus();
+    </script>
+</body>
+</html>
